@@ -11,7 +11,7 @@ public class Controller {
 
     @FXML
     public void onClickMethod(){
-        qrhelpbtn.setText("Thanks!");
+        FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона, \n%name% - для кодирования ФИО, \nлибо просто введите любой текст.");
     }
 
 }

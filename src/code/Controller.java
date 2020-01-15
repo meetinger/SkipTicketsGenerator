@@ -34,7 +34,7 @@ public class Controller {
     String fio;
     int amount;
     String qrcode;
-    String path;
+    String path = "";
     Image icon;
 
     Ticket preView;
@@ -54,11 +54,14 @@ public class Controller {
     @FXML
     public void genTickets(){
         updateVars();
-        for(int i = 1; i<=amount;++i){
-           // createTicket(String.valueOf(i), school, fio, qrcode, icon);
-            writeTicketToFile(new Ticket(String.valueOf(i), school,fio, qrcode, icon));
+        if(path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
+        else {
+            for (int i = 1; i <= amount; ++i) {
+                // createTicket(String.valueOf(i), school, fio, qrcode, icon);
+                writeTicketToFile(new Ticket(String.valueOf(i), school, fio, qrcode, icon));
+            }
+            FxDialogs.showInformation("ОK", "Талоны сохранены\nв указанную директорию!");
         }
-        FxDialogs.showInformation("ОK", "Талоны сохранены\nв указанную директорию!");
     }
 
     public void writeTicketToFile(Ticket ticket){

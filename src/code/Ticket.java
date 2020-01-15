@@ -108,12 +108,20 @@ public class Ticket {
         return SwingFXUtils.toFXImage(resized, null);
     }
 
+    private Image fitByWidth(Image toFit, int w){
+        return resizeImage(toFit, w, (int) ((int)toFit.getHeight()*w/toFit.getWidth()));
+    }
+    private Image fitByHeight(Image toFit, int h){
+        return resizeImage(toFit, (int) (toFit.getWidth()*h/toFit.getHeight()), h);
+    }
+
     private void makeResultImage() {
         BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         gr.drawImage(SwingFXUtils.fromFXImage(stamp, null), 1425, 45, null);
-        gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(teacher, 300,300), null), 150, 600, null);
+        //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(teacher, 300,300), null), 150, 600, null);
+        if(teacher!=null) gr.drawImage(SwingFXUtils.fromFXImage(fitByWidth(teacher, 220), null), 60, 675, null);
         resultImage = SwingFXUtils.toFXImage(resultAwp, null);
     }
 

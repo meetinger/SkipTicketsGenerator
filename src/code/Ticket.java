@@ -107,7 +107,7 @@ public class Ticket {
         AffineTransform at = new AffineTransform();
         at.scale(kx, ky);
         AffineTransformOp scaleOp =
-                new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+                new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
         result = scaleOp.filter(toScaleAwp, result);
         return SwingFXUtils.toFXImage(result, null);
     }

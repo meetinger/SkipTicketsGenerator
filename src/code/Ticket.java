@@ -37,24 +37,8 @@ public class Ticket {
         return resultImage;
     }
 
-    //TODO
     public Image getResultScaledImage() {
-        BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
-        BufferedImage scaled = new BufferedImage(295, 159, Transparency.TRANSLUCENT);
-        Graphics2D gr = resultAwp.createGraphics();
-        Graphics2D sc = scaled.createGraphics();
-
-        gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        gr.scale(0.5, 0.5);
-        gr.drawImage(resultAwp, 0, 0, null);
-        gr.dispose();
-        //gr.drawImage(resultAwp, );
-        //gr.drawImage(scaled,0,0,null);
-        sc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        sc.drawImage(resultAwp, 0, 0, null);
-
-        System.out.println(resultAwp.getWidth());
-        return SwingFXUtils.toFXImage(resultAwp, null);
+        return resizeImage(resultImage,295, 159);
     }
    /* private void writeStamp() {
         String[] fioArr = fio.split(" ");
@@ -111,14 +95,25 @@ public class Ticket {
         result = scaleOp.filter(toScaleAwp, result);
         return SwingFXUtils.toFXImage(result, null);
     }
-    
+
+    private Image resizeImage(Image toResize, int w, int h){
+        BufferedImage toResizeAwp = SwingFXUtils.fromFXImage(toResize, null);
+        BufferedImage resized = new BufferedImage(w, h, toResizeAwp.getType());
+        Graphics2D g = resized.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.drawImage(toResizeAwp, 0, 0, w, h, 0, 0, toResizeAwp.getWidth(),
+                toResizeAwp.getHeight(), null);
+        g.dispose();
+        return SwingFXUtils.toFXImage(resized, null);
+    }
 
     private void makeResultImage() {
         BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         gr.drawImage(SwingFXUtils.fromFXImage(stamp, null), 1425, 45, null);
-        gr.drawImage(SwingFXUtils.fromFXImage(scaleImage(teacher, 0.5,0.5), null), 150, 600, null);
+        gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(teacher, 300,300), null), 150, 600, null);
         resultImage = SwingFXUtils.toFXImage(resultAwp, null);
     }
 

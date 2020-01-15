@@ -57,7 +57,7 @@ public class Controller {
         //FxDialogs.showInformation("Переменные", schoolName+"\n"+fio+"\n"+amount+"\n"+qrcode);
        // System.out.println("SHOWED!");
         //preImage.setImage(preView.getResultImage());
-        preImage.setImage(preView.getResultImage());
+        preImage.setImage(preView.getResultScaledImage());
        // System.out.println("SETED!");
     }
 

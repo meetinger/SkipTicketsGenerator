@@ -50,7 +50,7 @@ public class Ticket {
         gr.setFont(new Font("Arial", Font.BOLD, 25));
         printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 100);
         for (int i = 1; i < fioArr.length; ++i) {
-            printCenterString(gr, fioArr[1], 150, 50, 100 + i * 25);
+            printCenterString(gr, fioArr[i], 150, 50, 100 + i * 25);
         }
 
         //TODO

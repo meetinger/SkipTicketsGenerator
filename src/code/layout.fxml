@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.Controller">
-   <Button fx:id="skipbtn" layoutX="15.0" layoutY="347.0" mnemonicParsing="false" onAction="#updatePreview" prefHeight="34.0" prefWidth="571.0" text="Skip">
+   <Button fx:id="skipbtn" layoutX="15.0" layoutY="347.0" mnemonicParsing="false" onAction="#genTickets" prefHeight="34.0" prefWidth="571.0" text="Skip">
       <font>
          <Font name="Ubuntu Bold" size="21.0" />
       </font>

@@ -40,6 +40,10 @@ public class Ticket {
         return ImageUtils.resizeImage(resultImage,295, 159);
     }
 
+    public String getIndex(){
+        return index;
+    }
+
     private void writeStamp() {
         String[] fioArr = fio.split(" ");
         BufferedImage stampAwp = SwingFXUtils.fromFXImage(stamp, null);
@@ -48,9 +52,9 @@ public class Ticket {
         gr.setColor(new Color(0, 85, 166));
 
         gr.setFont(new Font("Arial", Font.BOLD, 25));
-        printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 100);
+        printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
         for (int i = 1; i < fioArr.length; ++i) {
-            printCenterString(gr, fioArr[i], 150, 50, 100 + i * 25);
+            printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
         }
 
         //TODO

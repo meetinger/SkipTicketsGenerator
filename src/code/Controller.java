@@ -12,6 +12,7 @@ import javafx.stage.DirectoryChooser;
 
 import javax.sound.midi.Patch;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,8 +31,7 @@ public class Controller {
     String fio;
     int amount;
     String qrcode;
-
-    Image image;
+    Image teacher;
 
     Ticket preView;
 
@@ -52,10 +52,11 @@ public class Controller {
     public void updatePreview(){
         updateVars();
         //System.out.println("UPDATED!");
-        preView = new Ticket("0", schoolName, fio, qrcode, image);
+        preView = new Ticket("0", schoolName, fio, qrcode, teacher);
         //System.out.println("CREATED!");
         //FxDialogs.showInformation("Переменные", schoolName+"\n"+fio+"\n"+amount+"\n"+qrcode);
        // System.out.println("SHOWED!");
+        //preImage.setImage(preView.getResultImage());
         preImage.setImage(preView.getResultImage());
        // System.out.println("SETED!");
     }
@@ -79,7 +80,7 @@ public class Controller {
 
         if (photo != null) {
             FxDialogs.showInformation("Файл", photo.getPath());
-            image = new Image(photo.toURI().toString());
+            teacher = new Image(photo.toURI().toString());
             //updatePreview(image);
         } else {
             FxDialogs.showError("Ошибка", "Файл Неверный!");

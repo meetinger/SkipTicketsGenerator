@@ -1,27 +1,26 @@
 package code;
 
 
+import code.lib.ImageUtils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 
 public class Ticket {
 
     private String index, school, fio;
-    private Image QRCode, stamp, teacher, resultImage;
+    private Image QRCode, stamp, icon, resultImage;
 
 
-    public Ticket(String index, String school, String fio, String QRCode, Image teacher) {
+    public Ticket(String index, String school, String fio, String QRCode, Image icon) {
         this.index = index;
         this.school = school;
         this.fio = fio;
         //QRCODE
-        this.teacher = teacher;
+        this.icon = icon;
         resultImage = new Image("/img/template.png");
         stamp = new Image("/img/stamp_r.png");
         writeStamp();
@@ -38,28 +37,8 @@ public class Ticket {
     }
 
     public Image getResultScaledImage() {
-        return resizeImage(resultImage,295, 159);
+        return ImageUtils.resizeImage(resultImage,295, 159);
     }
-   /* private void writeStamp() {
-        String[] fioArr = fio.split(" ");
-        BufferedImage stampAwp = SwingFXUtils.fromFXImage(stamp, null);
-        Graphics2D gr = (Graphics2D) stampAwp.getGraphics();
-        gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        gr.setColor(new Color(0, 85, 166));
-
-        gr.setFont(new Font("Arial", Font.BOLD, 50));
-        printCenterString(gr, fioArr[0].toUpperCase(), 300, 100, 200);
-        printCenterString(gr, fioArr[1], 300, 100, 250);
-        printCenterString(gr, fioArr[2], 300, 100, 300);
-
-        gr.drawImage(stampAwp.getScaledInstance(250, 250, 0), 0, 0, null);
-        BufferedImage tmp = stampAwp;
-
-        //stampAwp = stampAwp.getScaledInstance(250, 250, 0).getBufferedImage();
-
-        //gr.drawImage(stampAwp, 0, 250, 250, 0, null, null, stampAwp.getWidth(), stampAwp.getHeight());
-        stamp = SwingFXUtils.toFXImage(stampAwp, null);
-    }*/
 
     private void writeStamp() {
         String[] fioArr = fio.split(" ");
@@ -83,45 +62,15 @@ public class Ticket {
         stamp = SwingFXUtils.toFXImage(stampAwp, null);
     }
 
-    private Image scaleImage(Image toScale, double kx, double ky) {
-        BufferedImage toScaleAwp = SwingFXUtils.fromFXImage(toScale, null);
-        int w = toScaleAwp.getWidth();
-        int h = toScaleAwp.getHeight();
-        BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        AffineTransform at = new AffineTransform();
-        at.scale(kx, ky);
-        AffineTransformOp scaleOp =
-                new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
-        result = scaleOp.filter(toScaleAwp, result);
-        return SwingFXUtils.toFXImage(result, null);
-    }
 
-    private Image resizeImage(Image toResize, int w, int h){
-        BufferedImage toResizeAwp = SwingFXUtils.fromFXImage(toResize, null);
-        BufferedImage resized = new BufferedImage(w, h, toResizeAwp.getType());
-        Graphics2D g = resized.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.drawImage(toResizeAwp, 0, 0, w, h, 0, 0, toResizeAwp.getWidth(),
-                toResizeAwp.getHeight(), null);
-        g.dispose();
-        return SwingFXUtils.toFXImage(resized, null);
-    }
-
-    private Image fitByWidth(Image toFit, int w){
-        return resizeImage(toFit, w, (int) ((int)toFit.getHeight()*w/toFit.getWidth()));
-    }
-    private Image fitByHeight(Image toFit, int h){
-        return resizeImage(toFit, (int) (toFit.getWidth()*h/toFit.getHeight()), h);
-    }
 
     private void makeResultImage() {
         BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         gr.drawImage(SwingFXUtils.fromFXImage(stamp, null), 1425, 45, null);
-        //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(teacher, 300,300), null), 150, 600, null);
-        if(teacher!=null) gr.drawImage(SwingFXUtils.fromFXImage(fitByWidth(teacher, 220), null), 60, 675, null);
+        //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(icon, 300,300), null), 150, 600, null);
+        if(icon!=null) gr.drawImage(SwingFXUtils.fromFXImage(ImageUtils.fitByWidth(icon, 200), null), 60, 675, null);
         resultImage = SwingFXUtils.toFXImage(resultAwp, null);
     }
 

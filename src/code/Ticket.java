@@ -68,9 +68,15 @@ public class Ticket {
         BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
         gr.drawImage(SwingFXUtils.fromFXImage(stamp, null), 1425, 45, null);
         //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(icon, 300,300), null), 150, 600, null);
+
         if(icon!=null) gr.drawImage(SwingFXUtils.fromFXImage(ImageUtils.fitByWidth(icon, 200), null), 60, 675, null);
+
+        gr.setFont(new Font("Arial", Font.ITALIC, 30));
+        gr.setColor(new Color(198, 198, 198));
+        gr.drawString("Номер Талона: " + index, 330, 900);
         resultImage = SwingFXUtils.toFXImage(resultAwp, null);
     }
 

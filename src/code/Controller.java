@@ -1,24 +1,17 @@
 package code;
 
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 
 import javax.imageio.ImageIO;
-import javax.sound.midi.Patch;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Controller {
@@ -106,6 +99,7 @@ public class Controller {
         if (photo != null) {
             FxDialogs.showInformation("Файл", photo.getPath());
             icon = new Image(photo.toURI().toString());
+            updatePreview();
             //updatePreview(image);
         } else {
             FxDialogs.showError("Ошибка", "Файл Неверный!");

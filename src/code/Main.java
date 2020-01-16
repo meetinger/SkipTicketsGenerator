@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("layout.fxml"));
         primaryStage.setTitle("SkipTicketsGenerator");
         primaryStage.setScene(new Scene(root, 600, 400));
-       // primaryStage.getIcons().add(new Image(getClass().getResource("/src/code/img/favicon.png")));
+        primaryStage.getIcons().add(new Image("/img/favicon.png"));
         primaryStage.show();
     }
 

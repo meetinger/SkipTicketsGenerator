@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public class Ticket {
 
     private String index, school, fio;
-    private Image QRCode, stamp, icon, resultImage;
+    private BufferedImage QRCode, stamp, icon, resultImage;
 
 
     public Ticket(String index, String school, String fio, String QRCode, Image icon) {
@@ -20,9 +20,9 @@ public class Ticket {
         this.school = school;
         this.fio = fio;
         //QRCODE
-        this.icon = icon;
-        resultImage = new Image("/img/template.png");
-        stamp = new Image("/img/stamp_r.png");
+        this.icon = SwingFXUtils.fromFXImage(icon, null);
+        resultImage = SwingFXUtils.fromFXImage(new Image("/img/template.png"), null);
+        stamp = SwingFXUtils.fromFXImage(new Image("/img/stamp_r.png"), null);
         writeStamp();
         makeResultImage();
     }
@@ -32,11 +32,11 @@ public class Ticket {
     }
 */
 
-    public Image getResultImage() {
+    public BufferedImage getResultImage() {
         return resultImage;
     }
 
-    public Image getResultScaledImage() {
+    public BufferedImage getResultScaledImage() {
         return ImageUtils.resizeImage(resultImage,295, 178);
     }
 
@@ -46,13 +46,14 @@ public class Ticket {
 
     private void writeStamp() {
         String[] fioArr = fio.split(" ");
-        BufferedImage stampAwp = SwingFXUtils.fromFXImage(stamp, null);
+        BufferedImage stampAwp = stamp;
         Graphics2D gr = stampAwp.createGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         gr.setColor(new Color(0, 85, 166));
 
         gr.setFont(new Font("Arial", Font.BOLD, 25));
         printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
+
         for (int i = 1; i < fioArr.length; ++i) {
             printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
         }
@@ -63,26 +64,26 @@ public class Ticket {
         //gr.drawImage(stampAwp,0,0, null);
         //gr.dispose();
 
-        stamp = SwingFXUtils.toFXImage(stampAwp, null);
+        stamp = stampAwp;
     }
 
 
 
     private void makeResultImage() {
-        BufferedImage resultAwp = SwingFXUtils.fromFXImage(resultImage, null);
+        BufferedImage resultAwp = resultImage;
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        gr.drawImage(SwingFXUtils.fromFXImage(stamp, null), 1250, 45, null);
+        gr.drawImage(stamp, 1250, 45, null);
         //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(icon, 300,300), null), 150, 600, null);
 
-        if(icon!=null) gr.drawImage(SwingFXUtils.fromFXImage(ImageUtils.fitByWidth(icon, 200), null), 60, 675, null);
+        if(icon!=null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 
         gr.setFont(new Font("Arial", Font.ITALIC, 30));
         gr.setColor(new Color(198, 198, 198));
         gr.drawString("Номер Талона: " + index, 330, 900);
         gr.drawString(school, 80, 80);
-        resultImage = SwingFXUtils.toFXImage(resultAwp, null);
+        resultImage = resultAwp;
     }
 
     private void printCenterString(Graphics gr, String str, int width, int X, int Y) {

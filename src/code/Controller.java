@@ -32,7 +32,6 @@ public class Controller {
 
     Ticket preView;
 
-
     public void createTicket(String index, String school, String fio, String QRCode, Image icon){
         tickets.add(new Ticket(index, school,fio, QRCode, icon));
     }
@@ -59,7 +58,7 @@ public class Controller {
 
     public void writeTicketToFile(Ticket ticket){
         try {
-            ImageIO.write(SwingFXUtils.fromFXImage(ticket.getResultImage(), null), "png", new File(path+"/ticket"+ticket.getIndex()+".png"));
+            ImageIO.write(ticket.getResultImage(), "png", new File(path+"/ticket"+ticket.getIndex()+".png"));
         } catch (IOException e) {
             FxDialogs.showError("Ошибка", e.getMessage());
         }
@@ -75,7 +74,7 @@ public class Controller {
         //System.out.println("CREATED!");
         //FxDialogs.showInformation("Переменные", schoolName+"\n"+fio+"\n"+amount+"\n"+qrcode);
        // System.out.println("SHOWED!");
-        preImage.setImage(preView.getResultImage());
+        preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(),null));
        // System.out.println("SETED!");
     }
 

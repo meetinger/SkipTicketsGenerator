@@ -10,8 +10,10 @@ import javafx.stage.DirectoryChooser;
 
 import javax.imageio.ImageIO;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class Controller {
@@ -48,15 +50,37 @@ public class Controller {
         updateVars();
         if(path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
         else {
-            for (int i = 1; i <= amount; ++i) {
-                // createTicket(String.valueOf(i), school, fio, qrcode, icon);
-                writeTicketToFile(new Ticket(String.valueOf(i), school, fio, qrcode, icon));
+            //startGen(amount, school, fio, qrcode, icon)
+           // Thread worker1 = new Thread(startGen(amount, school, fio, qrcode, icon));
+            /*new Worker(school, fio, qrcode, path, icon, 1, amount/2).start();
+            new Worker(school, fio, qrcode, path, icon, amount/2+1, amount).start();*/
+
+            int cores = Runtime.getRuntime().availableProcessors();
+
+            if(cores<=amount){
+                startGen(cores);
+            }else{
+                startGen(cores);
             }
+
             FxDialogs.showInformation("ОK", "Талоны сохранены\nв указанную директорию!");
         }
     }
 
-    public void writeTicketToFile(Ticket ticket){
+    public void startGen(int numthreads){
+        ArrayList<Worker> threads = new ArrayList<>();
+
+        for(int i = 0; i < numthreads; ++i){
+            threads.add(new Worker(school, fio, qrcode, path, icon, ((i)*amount)/(numthreads)+1, (i+1)*amount/numthreads));
+            threads.get(i).start();
+
+        }
+       /* for(int i = 0; i < numthreads; ++i){
+            threads.get(i).start();
+        }*/
+    }
+
+    public  void writeTicketToFile(Ticket ticket){
         try {
             ImageIO.write(ticket.getResultImage(), "png", new File(path+"/ticket"+ticket.getIndex()+".png"));
         } catch (IOException e) {

@@ -34,7 +34,7 @@ public class Worker extends Thread {
 
     private void writeTicketToFile(Ticket ticket) {
         try {
-            ImageIO.write(SwingFXUtils.fromFXImage(ticket.getResultImage(), null), "png", new File(path + "/ticket" + ticket.getIndex() + ".png"));
+            ImageIO.write(ticket.getResultImage(), "png", new File(path + "/ticket" + ticket.getIndex() + ".png"));
         } catch (IOException e) {
             FxDialogs.showError("Ошибка", e.getMessage());
         }

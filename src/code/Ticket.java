@@ -14,7 +14,6 @@ public class Ticket {
     private String index, school, fio;
     private BufferedImage QRCode, stamp, icon, resultImage;
 
-
     public Ticket(String index, String school, String fio, String QRCode, Image icon) {
         this.index = index;
         this.school = school;
@@ -26,11 +25,6 @@ public class Ticket {
         writeStamp();
         makeResultImage();
     }
-   /* private Image QRGenerate(){
-        Image qr = new Image(null);
-
-    }
-*/
 
     public BufferedImage getResultImage() {
         return resultImage;
@@ -75,7 +69,6 @@ public class Ticket {
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
         gr.drawImage(stamp, 1250, 45, null);
-        //gr.drawImage(SwingFXUtils.fromFXImage(resizeImage(icon, 300,300), null), 150, 600, null);
 
         if(icon!=null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 

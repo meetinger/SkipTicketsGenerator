@@ -50,11 +50,6 @@ public class Controller {
         updateVars();
         if(path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
         else {
-            //startGen(amount, school, fio, qrcode, icon)
-           // Thread worker1 = new Thread(startGen(amount, school, fio, qrcode, icon));
-            /*new Worker(school, fio, qrcode, path, icon, 1, amount/2).start();
-            new Worker(school, fio, qrcode, path, icon, amount/2+1, amount).start();*/
-
             int cores = Runtime.getRuntime().availableProcessors();
 
             if(cores<=amount){
@@ -75,31 +70,15 @@ public class Controller {
             threads.get(i).start();
 
         }
-       /* for(int i = 0; i < numthreads; ++i){
-            threads.get(i).start();
-        }*/
     }
-
-    public  void writeTicketToFile(Ticket ticket){
-        try {
-            ImageIO.write(ticket.getResultImage(), "png", new File(path+"/ticket"+ticket.getIndex()+".png"));
-        } catch (IOException e) {
-            FxDialogs.showError("Ошибка", e.getMessage());
-        }
-    }
-
 
 
     @FXML
     public void updatePreview(){
         updateVars();
-        //System.out.println("UPDATED!");
+
         preView = new Ticket("0", school, fio, qrcode, icon);
-        //System.out.println("CREATED!");
-        //FxDialogs.showInformation("Переменные", schoolName+"\n"+fio+"\n"+amount+"\n"+qrcode);
-       // System.out.println("SHOWED!");
         preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(),null));
-       // System.out.println("SETED!");
     }
 
 
@@ -123,7 +102,6 @@ public class Controller {
             FxDialogs.showInformation("Файл", photo.getPath());
             icon = new Image(photo.toURI().toString());
             updatePreview();
-            //updatePreview(image);
         } else {
             FxDialogs.showError("Ошибка", "Файл Неверный!");
         }

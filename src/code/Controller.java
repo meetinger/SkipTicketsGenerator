@@ -30,7 +30,7 @@ public class Controller {
     int amount;
     String qrcode;
     String path = "";
-    Image icon;
+    Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB), null);
 
     Ticket preView;
 

@@ -2,6 +2,7 @@ package code;
 
 
 import code.lib.ImageUtils;
+import code.lib.MathUtils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
@@ -31,10 +32,10 @@ public class Ticket {
     }
 
     public BufferedImage getResultScaledImage() {
-        return ImageUtils.resizeImage(resultImage,295, 178);
+        return ImageUtils.resizeImage(resultImage, 295, 178);
     }
 
-    public String getIndex(){
+    public String getIndex() {
         return index;
     }
 
@@ -51,16 +52,8 @@ public class Ticket {
         for (int i = 1; i < fioArr.length; ++i) {
             printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
         }
-
-        //TODO
-        //gr.rotate(Math.toRadians(25));
-        //gr.drawRenderedImage(stampAwp, null);
-        //gr.drawImage(stampAwp,0,0, null);
-        //gr.dispose();
-
-        stamp = stampAwp;
+        stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
     }
-
 
 
     private void makeResultImage() {
@@ -68,7 +61,7 @@ public class Ticket {
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
-        gr.drawImage(stamp, 1250, 45, null);
+        gr.drawImage(stamp, 1210, 10, null);
 
         if(icon!=null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 

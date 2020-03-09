@@ -1,4 +1,4 @@
-package code;
+package ru.yanchikdev;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +11,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("layout.fxml"));
+        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("layout.fxml"));
         primaryStage.setTitle("SkipTicketsGenerator");
         primaryStage.setScene(new Scene(root, 600, 400));
-        primaryStage.getIcons().add(new Image("/img/favicon.png"));
+        primaryStage.getIcons().add(new Image(String.valueOf(getClass().getClassLoader().getResource("img/favicon.png"))));
         primaryStage.show();
     }
 

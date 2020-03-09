@@ -1,6 +1,5 @@
-package code;
+package ru.yanchikdev;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
 import javax.imageio.ImageIO;

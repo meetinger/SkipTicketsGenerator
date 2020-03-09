@@ -1,28 +1,46 @@
-package code;
+package ru.yanchikdev;
 
 
-import code.lib.ImageUtils;
-import code.lib.MathUtils;
+import net.glxn.qrgen.core.image.ImageType;
+import net.glxn.qrgen.javase.QRCode;
+import ru.yanchikdev.lib.ImageUtils;
+import ru.yanchikdev.lib.MathUtils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 
 public class Ticket {
 
-    private String index, school, fio;
-    private BufferedImage QRCode, stamp, icon, resultImage;
+    private String index, school, fio, QRString;
+    private BufferedImage QRCodeIMG, stamp, icon, resultImage;
 
     public Ticket(String index, String school, String fio, String QRCode, Image icon) {
         this.index = index;
         this.school = school;
         this.fio = fio;
+        /*if(QRCode.equals("%number%")) {
+            this.QRString = this.index;
+        }else if(QRCode.equals("%fio%")){
+            this.QRString = this.fio;
+        }else if(QRCode.equals("%fio%+%number%")){
+            this.QRString = this.fio+": " + this.index;
+        }else{
+            this.QRString =
+        }*/
+        this.QRString = QRCode.replace("%number%", this.index).replace("%fio%", this.fio);
+
+
         //QRCODE
         this.icon = SwingFXUtils.fromFXImage(icon, null);
-        resultImage = SwingFXUtils.fromFXImage(new Image("/img/template.png"), null);
-        stamp = SwingFXUtils.fromFXImage(new Image("/img/stamp_r.png"), null);
+        resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
+        stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
+        writeQRCode();
         writeStamp();
         makeResultImage();
     }
@@ -37,6 +55,16 @@ public class Ticket {
 
     public String getIndex() {
         return index;
+    }
+
+    private void writeQRCode() {
+
+       File qrfile =  QRCode.from(QRString).to(ImageType.PNG).withSize(350, 350).withCharset("UTF-8").file();
+        try {
+            QRCodeIMG = ImageIO.read(qrfile);
+        }catch (Exception e){
+
+        }
     }
 
     private void writeStamp() {
@@ -63,7 +91,9 @@ public class Ticket {
 
         gr.drawImage(stamp, 1210, 10, null);
 
-        if(icon!=null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
+        gr.drawImage(QRCodeIMG, 1210, 630, null);
+
+        if (icon != null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 
         gr.setFont(new Font("Arial", Font.ITALIC, 30));
         gr.setColor(new Color(198, 198, 198));

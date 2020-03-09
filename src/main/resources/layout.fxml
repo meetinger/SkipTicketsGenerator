@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="code.Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.yanchikdev.Controller">
    <Button fx:id="skipbtn" layoutX="15.0" layoutY="347.0" mnemonicParsing="false" onAction="#genTickets" prefHeight="34.0" prefWidth="571.0" text="Skip">
       <font>
          <Font name="Ubuntu Bold" size="21.0" />
@@ -52,7 +52,7 @@
          <Font name="Ubuntu Bold" size="13.0" />
       </font>
    </Label>
-   <TextField fx:id="qrcodeField" layoutX="82.0" layoutY="120.0" prefHeight="26.0" prefWidth="152.0" text="\%number%" />
+   <TextField fx:id="qrcodeField" layoutX="82.0" layoutY="120.0" prefHeight="26.0" prefWidth="152.0" text="\%fio%+%number%" />
    <Button fx:id="qrhelpbtn" layoutX="244.0" layoutY="120.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="26.0" prefWidth="35.0" text="?" />
    <Button fx:id="debug" layoutX="15.0" layoutY="242.0" mnemonicParsing="false" onAction="#updatePreview" text="DEBUG" />
 </Pane>

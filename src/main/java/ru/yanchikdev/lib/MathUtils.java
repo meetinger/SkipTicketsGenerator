@@ -1,4 +1,4 @@
-package code.lib;
+package ru.yanchikdev.lib;
 
 public class MathUtils {
     public static int RandomInt(int min, int max) {

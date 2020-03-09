@@ -1,4 +1,4 @@
-package code;
+package ru.yanchikdev;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -8,17 +8,13 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 
-import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class Controller {
 
-    ArrayList<Ticket> tickets = new ArrayList<>();
+    ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 
     @FXML
     TextField schoolField, fioField, amountField, qrcodeField;
@@ -63,7 +59,7 @@ public class Controller {
     }
 
     public void startGen(int numthreads){
-        ArrayList<Worker> threads = new ArrayList<>();
+        ArrayList<Worker> threads = new ArrayList<Worker>();
 
         for(int i = 0; i < numthreads; ++i){
             threads.add(new Worker(school, fio, qrcode, path, icon, ((i)*amount)/(numthreads)+1, (i+1)*amount/numthreads));
@@ -84,7 +80,7 @@ public class Controller {
 
     @FXML
     public void showHelp() {
-        FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона, \n%name% - для кодирования ФИО, \nлибо просто введите любой текст.");
+        FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона, \n%fio% - для кодирования ФИО,\n%fio%+%number% - для кодирования номера и ФИО,\nлибо просто введите любой текст.", 235);
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package code;
+package ru.yanchikdev;
 
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -18,14 +18,20 @@ import java.util.Optional;
 
 public class FxDialogs {
 
-    public static void showInformation(String title, String message) {
+    public static void showInformation(String title, String message, int height) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Information");
         alert.setHeaderText(title);
         alert.setContentText(message);
-
+        if(height != -1) {
+            alert.getDialogPane().setMinHeight(height);
+        }
         alert.showAndWait();
+    }
+
+    public static void showInformation(String title, String message){
+        showInformation(title, message, -1);
     }
 
     public static void showWarning(String title, String message) {

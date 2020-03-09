@@ -33,7 +33,7 @@ public class Ticket {
         }else{
             this.QRString =
         }*/
-        this.QRString = QRCode.replace("%number%", this.index).replace("%fio%", this.fio);
+        this.QRString = QRCode.replace("%number%", this.index).replace("%fio%", this.fio).replace("%school%", this.school);
 
 
         //QRCODE
@@ -75,12 +75,18 @@ public class Ticket {
         gr.setColor(new Color(0, 85, 166));
 
         gr.setFont(new Font("Arial", Font.BOLD, 25));
-        printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
+        try {
+            printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
+        }catch (Exception e){
+
+        }
+
 
         for (int i = 1; i < fioArr.length; ++i) {
             printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
         }
-        stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
+        //stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
+        stamp = ImageUtils.rotateImageByDegrees(stampAwp, -35);
     }
 
 
@@ -91,7 +97,7 @@ public class Ticket {
 
         gr.drawImage(stamp, 1210, 10, null);
 
-        gr.drawImage(QRCodeIMG, 1210, 630, null);
+        gr.drawImage(QRCodeIMG, 1210, 620, null);
 
         if (icon != null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 

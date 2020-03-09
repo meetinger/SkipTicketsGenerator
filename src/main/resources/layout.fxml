@@ -52,7 +52,7 @@
          <Font name="Ubuntu Bold" size="13.0" />
       </font>
    </Label>
-   <TextField fx:id="qrcodeField" layoutX="82.0" layoutY="120.0" prefHeight="26.0" prefWidth="152.0" text="\%fio%+%number%" />
+   <TextField fx:id="qrcodeField" layoutX="82.0" layoutY="120.0" onKeyPressed="#updatePreview" onKeyReleased="#updatePreview" prefHeight="26.0" prefWidth="152.0" text="\%school%%fio%%number%" />
    <Button fx:id="qrhelpbtn" layoutX="244.0" layoutY="120.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="26.0" prefWidth="35.0" text="?" />
    <Button fx:id="debug" layoutX="15.0" layoutY="242.0" mnemonicParsing="false" onAction="#updatePreview" text="DEBUG" />
 </Pane>

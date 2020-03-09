@@ -80,7 +80,7 @@ public class Controller {
 
     @FXML
     public void showHelp() {
-        FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона, \n%fio% - для кодирования ФИО,\n%fio%+%number% - для кодирования номера и ФИО,\nлибо просто введите любой текст.", 235);
+        FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона,\n%school% - для кодирования школы,\n%fio% - для кодирования ФИО.\n\nДанные операторы можно комбинировать:\n%school%: %number%\n%school%, %fio%\n\nТакже Вы можете ввести любой текст.", 300);
     }
 
     @FXML

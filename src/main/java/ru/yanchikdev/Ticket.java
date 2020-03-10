@@ -59,10 +59,10 @@ public class Ticket {
 
     private void writeQRCode() {
 
-       File qrfile =  QRCode.from(QRString).to(ImageType.PNG).withSize(350, 350).withCharset("UTF-8").file();
+        File qrfile = QRCode.from(QRString).to(ImageType.PNG).withSize(350, 350).withCharset("UTF-8").file();
         try {
             QRCodeIMG = ImageIO.read(qrfile);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -72,18 +72,16 @@ public class Ticket {
         BufferedImage stampAwp = stamp;
         Graphics2D gr = stampAwp.createGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        gr.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         gr.setColor(new Color(0, 85, 166));
 
         gr.setFont(new Font("Arial", Font.BOLD, 25));
-        try {
+        if (fioArr.length != 0) {
             printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
-        }catch (Exception e){
-
-        }
-
-
-        for (int i = 1; i < fioArr.length; ++i) {
-            printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
+            for (int i = 1; i < fioArr.length; ++i) {
+                printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
+            }
         }
         //stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
         stamp = ImageUtils.rotateImageByDegrees(stampAwp, -35);
@@ -94,7 +92,8 @@ public class Ticket {
         BufferedImage resultAwp = resultImage;
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-
+        gr.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         gr.drawImage(stamp, 1210, 10, null);
 
         gr.drawImage(QRCodeIMG, 1210, 620, null);

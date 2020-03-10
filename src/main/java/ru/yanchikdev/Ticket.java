@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Collections;
 
 
 public class Ticket {
@@ -72,15 +73,37 @@ public class Ticket {
         BufferedImage stampAwp = stamp;
         Graphics2D gr = stampAwp.createGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        gr.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+        gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         gr.setColor(new Color(0, 85, 166));
 
-        gr.setFont(new Font("Arial", Font.BOLD, 25));
+        int fontSize = 25;
+
+        gr.setFont(new Font("Arial", Font.BOLD, fontSize));
         if (fioArr.length != 0) {
-            printCenterString(gr, fioArr[0].toUpperCase(), 150, 50, 110);
+
+            int maxStrLen = (int) gr.getFontMetrics().getStringBounds(fioArr[0], gr).getWidth();
+            int maxIndex = 0;
+
             for (int i = 1; i < fioArr.length; ++i) {
-                printCenterString(gr, fioArr[i], 150, 50, 110 + i * 25);
+                if (maxStrLen < (int) gr.getFontMetrics().getStringBounds(fioArr[i], gr).getWidth()) {
+                    maxStrLen = (int)
+                            gr.getFontMetrics().getStringBounds(fioArr[i], gr).getWidth();
+                    maxIndex = i;
+                }
+            }
+
+            while(maxStrLen >= 155){
+                gr.setFont(new Font("Arial", Font.BOLD, --fontSize));
+                maxStrLen = (int) gr.getFontMetrics().getStringBounds(fioArr[maxIndex], gr).getWidth();
+            }
+
+            for (int i = 0; i < fioArr.length; ++i) {
+                if (i == 0) {
+                    printCenterString(gr, fioArr[i].toUpperCase(), 150, 50, 110);
+                } else {
+                    printCenterString(gr, fioArr[i], 150, 50, 110 + i * fontSize);
+                }
             }
         }
         //stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
@@ -92,7 +115,7 @@ public class Ticket {
         BufferedImage resultAwp = resultImage;
         Graphics2D gr = (Graphics2D) resultAwp.getGraphics();
         gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        gr.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+        gr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         gr.drawImage(stamp, 1210, 10, null);
 

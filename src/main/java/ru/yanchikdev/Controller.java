@@ -74,6 +74,7 @@ public class Controller {
         updateVars();
 
         preView = new Ticket("0", school, fio, qrcode, icon);
+        preImage.setSmooth(true);
         preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(),null));
     }
 
@@ -86,7 +87,7 @@ public class Controller {
     @FXML
     public void getFile() {
         FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().addAll(//
+        fc.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Files", "*.*"),
                 new FileChooser.ExtensionFilter("JPG", "*.jpg"),
                 new FileChooser.ExtensionFilter("PNG", "*.png"),

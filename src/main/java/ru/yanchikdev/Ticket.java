@@ -93,7 +93,7 @@ public class Ticket {
                 }
             }
 
-            while(maxStrLen >= 155){
+            while (maxStrLen >= 155) {
                 gr.setFont(new Font("Arial", Font.BOLD, --fontSize));
                 maxStrLen = (int) gr.getFontMetrics().getStringBounds(fioArr[maxIndex], gr).getWidth();
             }
@@ -123,10 +123,28 @@ public class Ticket {
 
         if (icon != null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
 
-        gr.setFont(new Font("Arial", Font.ITALIC, 30));
+        int fontSize = 30;
+
+        gr.setFont(new Font("Arial", Font.ITALIC, fontSize));
         gr.setColor(new Color(198, 198, 198));
         gr.drawString("Номер Талона: " + index, 330, 900);
+
+
+        int strLen = (int) gr.getFontMetrics().getStringBounds(school, gr).getWidth();
+        while ((int) strLen >= 475) {
+            gr.setFont(new Font("Arial", Font.ITALIC, --fontSize));
+            strLen = (int) gr.getFontMetrics().getStringBounds(school, gr).getWidth();
+                /*if (fontSize <= 20){
+                    fontSize = 30;
+                    break;
+                }*/
+        }
+           /* if ((int) gr.getFontMetrics().getStringBounds(school, gr).getWidth() >= 700){
+                int split = school
+            }*/
+
         gr.drawString(school, 80, 80);
+
         resultImage = resultAwp;
     }
 

@@ -18,13 +18,14 @@ import java.util.Collections;
 
 public class Ticket {
 
-    private String index, school, fio, QRString;
+    private String index, school, fio, QRString, quote;
     private BufferedImage QRCodeIMG, stamp, icon, resultImage;
 
-    public Ticket(String index, String school, String fio, String QRCode, Image icon) {
+    public Ticket(String index, String school, String fio, String QRCode, String quote ,Image icon) {
         this.index = index;
         this.school = school;
         this.fio = fio;
+        this.quote = quote;
         /*if(QRCode.equals("%number%")) {
             this.QRString = this.index;
         }else if(QRCode.equals("%fio%")){
@@ -100,14 +101,17 @@ public class Ticket {
 
             for (int i = 0; i < fioArr.length; ++i) {
                 if (i == 0) {
-                    printCenterString(gr, fioArr[i].toUpperCase(), 150, 50, 110);
+                    ImageUtils.printCenterString(gr, fioArr[i].toUpperCase(), 150, 50, 110);
                 } else {
-                    printCenterString(gr, fioArr[i], 150, 50, 110 + i * fontSize);
+                    ImageUtils.printCenterString(gr, fioArr[i], 150, 50, 110 + i * fontSize);
                 }
             }
         }
         //stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
         stamp = ImageUtils.rotateImageByDegrees(stampAwp, -35);
+
+
+
     }
 
 
@@ -121,7 +125,9 @@ public class Ticket {
 
         gr.drawImage(QRCodeIMG, 1210, 620, null);
 
-        if (icon != null) gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
+        if (icon != null) {
+            gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
+        }
 
         int fontSize = 30;
 
@@ -129,29 +135,17 @@ public class Ticket {
         gr.setColor(new Color(198, 198, 198));
         gr.drawString("Номер Талона: " + index, 330, 900);
 
+        ImageUtils.printCenterString(gr, school, 475, 80, 80);
 
-        int strLen = (int) gr.getFontMetrics().getStringBounds(school, gr).getWidth();
-        while ((int) strLen >= 475) {
-            gr.setFont(new Font("Arial", Font.ITALIC, --fontSize));
-            strLen = (int) gr.getFontMetrics().getStringBounds(school, gr).getWidth();
-                /*if (fontSize <= 20){
-                    fontSize = 30;
-                    break;
-                }*/
+        String[] quoteArr = quote.replace("\\n","\n").split("\\r?\\n");
+        gr.setColor(Color.black);
+        gr.setFont(new Font("Verdana", Font.PLAIN, 30));
+        for(int i = 0; i < quoteArr.length; ++i){
+            ImageUtils.printCenterAdaptiveString(gr, quoteArr[i], 150, 275, 650+i*30);
         }
-           /* if ((int) gr.getFontMetrics().getStringBounds(school, gr).getWidth() >= 700){
-                int split = school
-            }*/
-
-        gr.drawString(school, 80, 80);
 
         resultImage = resultAwp;
     }
 
-    private void printCenterString(Graphics gr, String str, int width, int X, int Y) {
-        int stringLen = (int)
-                gr.getFontMetrics().getStringBounds(str, gr).getWidth();
-        int start = width / 2 - stringLen / 2;
-        gr.drawString(str, start + X, Y);
-    }
+
 }

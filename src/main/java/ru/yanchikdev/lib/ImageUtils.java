@@ -100,4 +100,39 @@ public class ImageUtils {
 
         return rotated;
     }
+
+    public static void printCenterString(Graphics gr, String str, int width, int x, int y) {
+        int stringLen = (int)
+                gr.getFontMetrics().getStringBounds(str, gr).getWidth();
+        int start = width / 2 - stringLen / 2;
+        gr.drawString(str, start + x, y);
+    }
+
+    public static void printAdaptiveString(Graphics gr, String str, int width, int x, int y){
+        String fontFamily = gr.getFont().getFamily();
+        int fontStyle = gr.getFont().getStyle();
+        int fontSize = gr.getFont().getSize();
+        int strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
+        while(strLen >= width){
+            gr.setFont(new Font(fontFamily, fontStyle, --fontSize));
+            strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
+        }
+        gr.drawString(str, x, y);
+    }
+
+    public static void printCenterAdaptiveString(Graphics gr, String str, int width, int x, int y){
+        String fontFamily = gr.getFont().getFamily();
+        int fontStyle = gr.getFont().getStyle();
+        int fontSize = gr.getFont().getSize();
+
+        int strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
+        System.out.println("Current:"+strLen);
+        while(strLen >= width){
+            gr.setFont(new Font(fontFamily, fontStyle, --fontSize));
+            System.out.println("Iter:"+strLen);
+            System.out.println("FontSize:"+fontSize);
+            strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
+        }
+        printCenterString(gr, str, width, x, y);
+    }
 }

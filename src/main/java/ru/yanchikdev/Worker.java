@@ -7,12 +7,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class Worker extends Thread {
-    String school, fio, qrcode, path;
+    String school, fio, qrcode, path, quote;
     int leftborder, rightborder, progress;
     Image icon;
 
 
-    Worker(String school, String fio, String qrcode, String path, Image icon,
+    Worker(String school, String fio, String qrcode, String path, String quote, Image icon,
            int leftborder, int rightborder) {
         this.school = school;
         this.fio = fio;
@@ -21,13 +21,14 @@ public class Worker extends Thread {
         this.leftborder = leftborder;
         this.rightborder = rightborder;
         this.icon = icon;
+        this.quote = quote;
     }
 
 
     @Override
     public void run() {
         for (int i = leftborder; i <= rightborder; ++i) {
-            this.writeTicketToFile(new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.icon));
+            this.writeTicketToFile(new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.quote, this.icon));
             this.progress = i - leftborder + 1;
         }
     }

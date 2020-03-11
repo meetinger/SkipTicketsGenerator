@@ -22,7 +22,7 @@ public class Controller {
     //ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 
     @FXML
-    TextField schoolField, fioField, amountField, qrcodeField;
+    TextField schoolField, fioField, amountField, qrcodeField, quoteField;
 
     @FXML
     ProgressBar progressBar;
@@ -33,6 +33,7 @@ public class Controller {
     String fio;
     int amount;
     String qrcode;
+    String quote;
     String path = "";
     Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB), null);
 
@@ -48,6 +49,7 @@ public class Controller {
         fio = fioField.getText();
         amount = Integer.parseInt(amountField.getText());
         qrcode = qrcodeField.getText();
+        quote = quoteField.getText();
     }
 
     @FXML
@@ -73,7 +75,7 @@ public class Controller {
         updatePreview();
 
         for (int i = 0; i < numthreads; ++i) {
-            threads.add(new Worker(school, fio, qrcode, path, icon, ((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
+            threads.add(new Worker(school, fio, qrcode, path, quote, icon,((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
             threads.get(i).start();
         }
 
@@ -110,7 +112,7 @@ public class Controller {
     public void updatePreview() {
         updateVars();
 
-        preView = new Ticket("0", school, fio, qrcode, icon);
+        preView = new Ticket("0", school, fio, qrcode, quote, icon);
         preImage.setSmooth(true);
         preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(), null));
     }

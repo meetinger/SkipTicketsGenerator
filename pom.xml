@@ -91,6 +91,15 @@
                                     <rename logfile="${project.build.directory}/yguard.log.xml"
                                             replaceClassNameStrings="true">
                                         <property name="obfuscation-prefix" value="new.target.package"/>
+                                        <keep>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="ru.yanchikdev.Controller"/>
+                                                    <include name="com.github.*"/>
+                                                    <include name="com.github.*"/>
+                                                </patternset>
+                                            </class>
+                                        </keep>
                                     </rename>
                                     <externalclasses>
                                         <pathelement path="${mvn.classpath}" />

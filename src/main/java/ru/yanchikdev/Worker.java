@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Worker extends Thread {
     String school, fio, qrcode, path;
-    int leftborder, rightborder;
+    int leftborder, rightborder, progress;
     Image icon;
 
 
@@ -28,6 +28,7 @@ public class Worker extends Thread {
     public void run() {
         for (int i = leftborder; i <= rightborder; ++i) {
             this.writeTicketToFile(new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.icon));
+            this.progress = i - leftborder + 1;
         }
     }
 
@@ -37,5 +38,9 @@ public class Worker extends Thread {
         } catch (IOException e) {
             FxDialogs.showError("Ошибка", e.getMessage());
         }
+    }
+
+    public int getProgress(){
+        return this.progress;
     }
 }

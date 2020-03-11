@@ -2,22 +2,30 @@ package ru.yanchikdev;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
+
 public class Controller {
 
-    ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+    //ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 
     @FXML
     TextField schoolField, fioField, amountField, qrcodeField;
+
+    @FXML
+    ProgressBar progressBar;
 
     @FXML
     ImageView preImage;
@@ -29,12 +37,13 @@ public class Controller {
     Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB), null);
 
     Ticket preView;
+    ArrayList<Worker> threads = new ArrayList<Worker>();
 
-    public void createTicket(String index, String school, String fio, String QRCode, Image icon){
-        tickets.add(new Ticket(index, school,fio, QRCode, icon));
-    }
+    /*public void createTicket(String index, String school, String fio, String QRCode, Image icon) {
+        tickets.add(new Ticket(index, school, fio, QRCode, icon));
+    }*/
 
-    public void updateVars(){
+    public void updateVars() {
         school = schoolField.getText();
         fio = fioField.getText();
         amount = Integer.parseInt(amountField.getText());
@@ -42,40 +51,68 @@ public class Controller {
     }
 
     @FXML
-    public void genTickets(){
+    public void genTickets() {
         updateVars();
-        if(path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
+        if (path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
         else {
             int cores = Runtime.getRuntime().availableProcessors();
 
-            if(cores<=amount){
+            if (cores <= amount) {
                 startGen(cores);
-            }else{
+            } else {
                 startGen(cores);
             }
 
-            FxDialogs.showInformation("ОK", "Талоны сохранены\nв указанную директорию!");
+            FxDialogs.showInformation("ОK", "Талоны сохраняются\nв указанную директорию!");
         }
     }
 
-    public void startGen(int numthreads){
-        ArrayList<Worker> threads = new ArrayList<Worker>();
+    public void startGen(int numthreads) {
+        //ArrayList<Worker> threads = new ArrayList<Worker>();
 
-        for(int i = 0; i < numthreads; ++i){
-            threads.add(new Worker(school, fio, qrcode, path, icon, ((i)*amount)/(numthreads)+1, (i+1)*amount/numthreads));
+        updatePreview();
+
+        for (int i = 0; i < numthreads; ++i) {
+            threads.add(new Worker(school, fio, qrcode, path, icon, ((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
             threads.get(i).start();
-
         }
+
+        progressBar.setVisible(true);
+
+
+        Timer progressUpdater = new javax.swing.Timer(100, new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                double currentProgress = calcProgress();
+                progressBar.setProgress(currentProgress);
+                if (currentProgress >= 1) {
+                    ((Timer) evt.getSource()).stop();
+                    threads.clear();
+                    System.gc();
+                }
+
+            }
+        });
+
+        progressUpdater.start();
+
+    }
+
+    public double calcProgress() {
+        int sum = 0;
+        for (Worker thread : threads) {
+            sum += thread.getProgress();
+        }
+        return (double) (sum) / (amount);
     }
 
 
     @FXML
-    public void updatePreview(){
+    public void updatePreview() {
         updateVars();
 
         preView = new Ticket("0", school, fio, qrcode, icon);
         preImage.setSmooth(true);
-        preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(),null));
+        preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(), null));
     }
 
 

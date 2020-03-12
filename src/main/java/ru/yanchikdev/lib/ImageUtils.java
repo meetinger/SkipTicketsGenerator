@@ -124,13 +124,10 @@ public class ImageUtils {
         String fontFamily = gr.getFont().getFamily();
         int fontStyle = gr.getFont().getStyle();
         int fontSize = gr.getFont().getSize();
-
         int strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
-        System.out.println("Current:"+strLen);
+
         while(strLen >= width){
             gr.setFont(new Font(fontFamily, fontStyle, --fontSize));
-            System.out.println("Iter:"+strLen);
-            System.out.println("FontSize:"+fontSize);
             strLen = (int) gr.getFontMetrics().getStringBounds(str, gr).getWidth();
         }
         printCenterString(gr, str, width, x, y);

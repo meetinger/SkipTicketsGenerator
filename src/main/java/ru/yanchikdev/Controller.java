@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
+import ru.yanchikdev.lib.ImageUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -114,7 +115,9 @@ public class Controller {
 
         preView = new Ticket("0", school, fio, qrcode, quote, icon);
         preImage.setSmooth(true);
-        preImage.setImage(SwingFXUtils.toFXImage(preView.getResultImage(), null));
+        /*preImage.setFitWidth(preView.getResultImage().getWidth()/5);
+        preImage.setFitHeight(preView.getResultImage().getHeight()/5);*/
+        preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int)(preImage.getFitWidth()*2), (int)(preImage.getFitHeight()*2)), null));
     }
 
 

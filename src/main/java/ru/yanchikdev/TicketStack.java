@@ -30,7 +30,7 @@ public class TicketStack {
         }
     }
 
-    public BufferedImage getResult() {
+    public BufferedImage getResultImage() {
         return toPrint;
     }
 

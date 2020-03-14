@@ -1,0 +1,53 @@
+package ru.yanchikdev;
+
+import javax.imageio.ImageIO;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class StackWorker extends Thread {
+
+    ArrayList<Ticket> stack = new ArrayList<>();
+    String path;
+    double progress;
+
+    public StackWorker(ArrayList<Ticket> stack, String path){
+        this.stack = stack;
+        this.path = path;
+    }
+
+    @Override
+    public void run(){
+        int ticketsCounter = 0;
+        /*while(ticketsCounter/12 <= 1){
+            TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(ticketsCounter, ticketsCounter+12)));
+            writeStackToFile(tmp);
+            ticketsCounter+=12;
+        }*/
+        if(stack.size() <= 12){
+            TicketStack tmp = new TicketStack(stack);
+            writeStackToFile(tmp);
+        }
+        for(int i = 0; i < stack.size()/12;++i){
+            int lastindex = Math.min((i + 1) * 12, stack.size() - 1);
+            TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(i * 12, lastindex)));
+            writeStackToFile(tmp);
+            progress = (double) (i+1)/(stack.size()/12);
+        }
+    }
+
+
+    private void writeStackToFile(TicketStack stack) {
+        try {
+            ImageIO.write(stack.getResultImage(), "png", new File(path + "/toPrint/print" + stack.getIndexes() + ".png"));
+        } catch (IOException e) {
+            FxDialogs.showError("Ошибка", e.getMessage());
+        }
+    }
+
+
+    public double getProgress(){
+        return progress;
+    }
+}

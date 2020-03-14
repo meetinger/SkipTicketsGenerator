@@ -99,7 +99,6 @@ public class FxDialogs {
         alert.setHeaderText(title);
         alert.setContentText(message);
 
-        //To make enter key press the actual focused button, not the first one. Just like pressing "space".
         alert.getDialogPane().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 event.consume();

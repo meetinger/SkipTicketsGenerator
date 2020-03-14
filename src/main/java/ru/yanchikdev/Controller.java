@@ -50,11 +50,6 @@ public class Controller {
     int threadsCounter = 0;
     int numThreads = Runtime.getRuntime().availableProcessors();
 
-    /*public void createTicket(String index, String school, String fio, String QRCode, Image icon) {
-        tickets.add(new Ticket(index, school, fio, QRCode, icon));
-    }*/
-
-
     public void updateVars() {
         school = schoolField.getText();
         fio = fioField.getText();
@@ -120,6 +115,7 @@ public class Controller {
                     ((Timer) evt.getSource()).stop();
                     ticketsWorkers.clear();
                     System.gc();
+                    System.out.println();
                 }
 
             }
@@ -131,29 +127,6 @@ public class Controller {
     }
 
     public void genStacks() {
-
-       /* Collections.sort(tickets);
-        if (tickets.size() < 12) {
-            try {
-                TicketStack tmp = new TicketStack(tickets);
-                ImageIO.write(tmp.getResult(), "png", new File(path + "/tickets/print" + tmp.getIndexes() + ".png"));
-                progressBar.setProgress(1);
-            } catch (Exception e) {
-
-            }
-        } else {
-            for (int i = 0; i < ((tickets.size() - 1) / 12); ++i) {
-                try {
-                    int lastindex = Math.min((i + 1) * 12, tickets.size() - 1);
-                    TicketStack tmp = new TicketStack(new ArrayList<Ticket>(tickets.subList(i * 12, lastindex)));
-                    ImageIO.write(tmp.getResultImage(), "png", new File(path + "/toPrint/print" + tmp.getIndexes() + ".png"));
-                } catch (IOException e) {
-                    FxDialogs.showError("Ошибка", e.getMessage());
-                }
-                progressBar.setProgress((double) (i+1)/((double)(tickets.size() -1 ) / 12));
-            }
-        }*
-        */
         progressBar.setStyle("-fx-accent: orange;");
         Collections.sort(tickets);
 
@@ -162,22 +135,8 @@ public class Controller {
             stackWorkers.add(new StackWorker(tickets, path));
             stackWorkers.get(0).start();
         } else {
-            /*int batchSize = Math.min(MathUtils.gcd(12, numThreads), amount);
-
-            System.out.println(batchSize);
-            System.out.println(amount / batchSize);*/
-
-            /*for (int i = 0; i < (amount / batchSize) - 1; ++i) {
-                int lastindex = Math.min((i + 1) * batchSize, amount - 1);
-
-                stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * batchSize, lastindex + 1)), path));
-                stackWorkers.get(stackWorkers.size() - 1).start();
-                System.out.println(i);
-            }*/
             int factor = amount/(numThreads*12) + 1;
-            /*while (amount / (12 * factor) > numThreads) {
-                ++factor;
-            }*/
+
             for (int i = 0; i <= amount / (12 * factor); ++i) {
                 int lastindex = Math.min((i + 1) * 12 * factor, amount - 1);
 
@@ -226,8 +185,6 @@ public class Controller {
 
         preView = new Ticket("0", school, fio, qrcode, quote, icon);
         preImage.setSmooth(true);
-        /*preImage.setFitWidth(preView.getResultImage().getWidth()/5);
-        preImage.setFitHeight(preView.getResultImage().getHeight()/5);*/
         preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int) (preImage.getFitWidth() * 2), (int) (preImage.getFitHeight() * 2)), null));
     }
 

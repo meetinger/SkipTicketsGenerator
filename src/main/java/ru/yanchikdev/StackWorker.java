@@ -19,12 +19,7 @@ public class StackWorker extends Thread {
 
     @Override
     public void run(){
-        int ticketsCounter = 0;
-        /*while(ticketsCounter/12 <= 1){
-            TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(ticketsCounter, ticketsCounter+12)));
-            writeStackToFile(tmp);
-            ticketsCounter+=12;
-        }*/
+
         if(stack.size() <= 12){
             TicketStack tmp = new TicketStack(stack);
             writeStackToFile(tmp);

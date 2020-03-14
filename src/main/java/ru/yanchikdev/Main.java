@@ -21,10 +21,6 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-   /* public static Controller getController(){
-       // return loader.getController();
-    }*/
-
     public static void main(String[] args) {
         launch(args);
     }

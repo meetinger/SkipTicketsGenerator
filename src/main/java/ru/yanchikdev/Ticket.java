@@ -11,9 +11,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Collections;
 
 
 public class Ticket implements Comparable<Ticket>{
@@ -26,20 +24,9 @@ public class Ticket implements Comparable<Ticket>{
         this.school = school;
         this.fio = fio;
         this.quote = quote;
-        /*if(QRCode.equals("%number%")) {
-            this.QRString = this.index;
-        }else if(QRCode.equals("%fio%")){
-            this.QRString = this.fio;
-        }else if(QRCode.equals("%fio%+%number%")){
-            this.QRString = this.fio+": " + this.index;
-        }else{
-            this.QRString =
-        }*/
         this.QRString = QRCode.replace("%number%", this.index).replace("%fio%", this.fio).replace("%school%", this.school);
-
-
-        //QRCODE
         this.icon = SwingFXUtils.fromFXImage(icon, null);
+
         resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
         stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
         writeQRCode();
@@ -107,11 +94,7 @@ public class Ticket implements Comparable<Ticket>{
                 }
             }
         }
-        //stamp = ImageUtils.rotateImageByDegrees(stampAwp, MathUtils.RandomIntInInterval(-45, -25, 25, 45));
         stamp = ImageUtils.rotateImageByDegrees(stampAwp, -35);
-
-
-
     }
 
 

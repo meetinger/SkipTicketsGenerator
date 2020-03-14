@@ -28,14 +28,18 @@ public class Worker extends Thread {
     @Override
     public void run() {
         for (int i = leftborder; i <= rightborder; ++i) {
-            this.writeTicketToFile(new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.quote, this.icon));
+            Ticket tmp = new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.quote, this.icon);
+            this.writeTicketToFile(tmp);
+            Main.control.addTicketToArray(tmp);
             this.progress = i - leftborder + 1;
         }
+        Main.control.threadsEnd();
+        Main.control.startStacksGen();
     }
 
     private void writeTicketToFile(Ticket ticket) {
         try {
-            ImageIO.write(ticket.getResultImage(), "png", new File(path + "/ticket" + ticket.getIndex() + ".png"));
+            ImageIO.write(ticket.getResultImage(), "png", new File(path + "/tickets/ticket" + ticket.getIndex() + ".png"));
         } catch (IOException e) {
             FxDialogs.showError("Ошибка", e.getMessage());
         }

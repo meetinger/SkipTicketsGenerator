@@ -10,17 +10,20 @@ import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import ru.yanchikdev.lib.ImageUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Controller {
 
-    //ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+    ArrayList<Ticket> tickets = new ArrayList<Ticket>();
 
     @FXML
     TextField schoolField, fioField, amountField, qrcodeField, quoteField;
@@ -41,9 +44,13 @@ public class Controller {
     Ticket preView;
     ArrayList<Worker> threads = new ArrayList<Worker>();
 
+    int threadsCounter = 0;
+    int numThreads = 0;
+
     /*public void createTicket(String index, String school, String fio, String QRCode, Image icon) {
         tickets.add(new Ticket(index, school, fio, QRCode, icon));
     }*/
+
 
     public void updateVars() {
         school = schoolField.getText();
@@ -58,25 +65,43 @@ public class Controller {
         updateVars();
         if (path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
         else {
-            int cores = Runtime.getRuntime().availableProcessors();
 
-            if (cores <= amount) {
-                startGen(cores);
-            } else {
-                startGen(cores);
-            }
+            numThreads = Math.min(Runtime.getRuntime().availableProcessors(), amount);
+
+            startGen(numThreads);
 
             FxDialogs.showInformation("ОK", "Талоны сохраняются\nв указанную директорию!");
         }
     }
 
+    public void addTicketsToArray(ArrayList<Ticket> subArray) {
+        this.tickets.addAll(subArray);
+    }
+
+    public void addTicketToArray(Ticket ticket) {
+        this.tickets.add(ticket);
+    }
+
+    public void threadsEnd(){
+        ++threadsCounter;
+    }
+
+    public void startStacksGen(){
+        if (threadsCounter >= numThreads){
+            genStacks();
+        }
+    }
+
     public void startGen(int numthreads) {
-        //ArrayList<Worker> threads = new ArrayList<Worker>();
+        threadsCounter = 0;
+
+        new File(path + "/tickets/").mkdir();
+        new File(path + "/toPrint/").mkdir();
 
         updatePreview();
 
         for (int i = 0; i < numthreads; ++i) {
-            threads.add(new Worker(school, fio, qrcode, path, quote, icon,((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
+            threads.add(new Worker(school, fio, qrcode, path, quote, icon, ((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
             threads.get(i).start();
         }
 
@@ -98,6 +123,42 @@ public class Controller {
 
         progressUpdater.start();
 
+       /* try {
+            for (int i = 0; i < numthreads; ++i) {
+                threads.get(i).join();
+            }
+        } catch (Exception e) {
+
+        }
+
+        genStacks();*/
+
+    }
+
+    public void genStacks() {
+        progressBar.setStyle("-fx-accent: orange;");
+        progressBar.setProgress(0);
+        Collections.sort(tickets);
+        if (tickets.size() < 12) {
+            try {
+                TicketStack tmp = new TicketStack(tickets);
+                ImageIO.write(tmp.getResult(), "png", new File(path + "/tickets/print" + tmp.getIndexes() + ".png"));
+                progressBar.setProgress(1);
+            } catch (Exception e) {
+
+            }
+        } else {
+            for (int i = 0; i < ((tickets.size() - 1) / 12); ++i) {
+                try {
+                    int lastindex = Math.min((i + 1) * 12, tickets.size() - 1);
+                    TicketStack tmp = new TicketStack(new ArrayList<Ticket>(tickets.subList(i * 12, lastindex)));
+                    ImageIO.write(tmp.getResult(), "png", new File(path + "/toPrint/print" + tmp.getIndexes() + ".png"));
+                } catch (IOException e) {
+                    FxDialogs.showError("Ошибка", e.getMessage());
+                }
+                progressBar.setProgress((double) (i+1)/((double)(tickets.size() -1 ) / 12));
+            }
+        }
     }
 
     public double calcProgress() {
@@ -117,7 +178,7 @@ public class Controller {
         preImage.setSmooth(true);
         /*preImage.setFitWidth(preView.getResultImage().getWidth()/5);
         preImage.setFitHeight(preView.getResultImage().getHeight()/5);*/
-        preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int)(preImage.getFitWidth()*2), (int)(preImage.getFitHeight()*2)), null));
+        preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int) (preImage.getFitWidth() * 2), (int) (preImage.getFitHeight() * 2)), null));
     }
 
 

@@ -16,7 +16,7 @@ import java.io.File;
 import java.util.Collections;
 
 
-public class Ticket {
+public class Ticket implements Comparable<Ticket>{
 
     private String index, school, fio, QRString, quote;
     private BufferedImage QRCodeIMG, stamp, icon, resultImage;
@@ -147,5 +147,9 @@ public class Ticket {
         resultImage = resultAwp;
     }
 
+    @Override
+    public int compareTo(Ticket t){
+        return Integer.parseInt(this.getIndex()) - Integer.parseInt(t.getIndex());
+    }
 
 }

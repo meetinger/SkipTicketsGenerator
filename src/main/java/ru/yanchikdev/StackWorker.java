@@ -12,23 +12,25 @@ public class StackWorker extends Thread {
     String path;
     double progress;
 
-    public StackWorker(ArrayList<Ticket> stack, String path){
+    public StackWorker(ArrayList<Ticket> stack, String path) {
         this.stack = stack;
         this.path = path;
     }
 
     @Override
-    public void run(){
+    public void run() {
 
-        if(stack.size() <= 12){
+        if (stack.size() <= 12) {
             TicketStack tmp = new TicketStack(stack);
             writeStackToFile(tmp);
         }
-        for(int i = 0; i < stack.size()/12;++i){
-            int lastindex = Math.min((i + 1) * 12, stack.size() - 1);
-            TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(i * 12, lastindex)));
-            writeStackToFile(tmp);
-            progress = (double) (i+1)/(stack.size()/12);
+        for (int i = 0; i <= stack.size() / 12; ++i) {
+            int lastindex = Math.min((i + 1) * 12, stack.size());
+            if (i * 12 + 1 != lastindex) {
+                TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(i * 12, lastindex)));
+                writeStackToFile(tmp);
+            }
+            progress = (double) (i + 1) / (stack.size() / 12);
         }
     }
 
@@ -42,7 +44,7 @@ public class StackWorker extends Thread {
     }
 
 
-    public double getProgress(){
+    public double getProgress() {
         return progress;
     }
 }

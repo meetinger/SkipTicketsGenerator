@@ -16,15 +16,16 @@ import java.io.File;
 
 public class Ticket implements Comparable<Ticket>{
 
-    private String index, school, fio, QRString, quote;
+    private String  school, fio, QRString, quote;
     private BufferedImage QRCodeIMG, stamp, icon, resultImage;
+    int index;
 
-    public Ticket(String index, String school, String fio, String QRCode, String quote ,Image icon) {
+    public Ticket(int index, String school, String fio, String QRCode, String quote ,Image icon) {
         this.index = index;
         this.school = school;
         this.fio = fio;
         this.quote = quote;
-        this.QRString = QRCode.replace("%number%", this.index).replace("%fio%", this.fio).replace("%school%", this.school);
+        this.QRString = QRCode.replace("%number%", String.valueOf(this.index)).replace("%fio%", this.fio).replace("%school%", this.school);
         this.icon = SwingFXUtils.fromFXImage(icon, null);
 
         resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
@@ -42,7 +43,7 @@ public class Ticket implements Comparable<Ticket>{
         return ImageUtils.resizeImage(resultImage, 295, 178);
     }
 
-    public String getIndex() {
+    public int getIndex() {
         return index;
     }
 
@@ -132,7 +133,7 @@ public class Ticket implements Comparable<Ticket>{
 
     @Override
     public int compareTo(Ticket t){
-        return Integer.parseInt(this.getIndex()) - Integer.parseInt(t.getIndex());
+        return this.getIndex() - t.getIndex();
     }
 
 }

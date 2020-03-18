@@ -28,7 +28,7 @@ public class TicketsWorker extends Thread {
     @Override
     public void run() {
         for (int i = leftborder; i <= rightborder; ++i) {
-            Ticket tmp = new Ticket(String.valueOf(i), this.school, this.fio, this.qrcode, this.quote, this.icon);
+            Ticket tmp = new Ticket(i, this.school, this.fio, this.qrcode, this.quote, this.icon);
             this.writeTicketToFile(tmp);
             Main.control.addTicketToArray(tmp);
             this.progress = i - leftborder + 1;

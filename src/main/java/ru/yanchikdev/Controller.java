@@ -183,7 +183,7 @@ public class Controller {
     public void updatePreview() {
         updateVars();
 
-        preView = new Ticket("0", school, fio, qrcode, quote, icon);
+        preView = new Ticket(0, school, fio, qrcode, quote, icon);
         preImage.setSmooth(true);
         preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int) (preImage.getFitWidth() * 2), (int) (preImage.getFitHeight() * 2)), null));
     }

@@ -35,6 +35,6 @@ public class TicketStack {
     }
 
     public String getIndexes() {
-        return Math.min(Integer.parseInt(tickets.get(0).getIndex()), Integer.parseInt(tickets.get(tickets.size() - 1).getIndex())) + "-" + Math.max(Integer.parseInt(tickets.get(0).getIndex()), Integer.parseInt(tickets.get(tickets.size() - 1).getIndex()));
+        return Math.min(tickets.get(0).getIndex(), tickets.get(tickets.size() - 1).getIndex()) + "-" + Math.max(tickets.get(0).getIndex(), tickets.get(tickets.size() - 1).getIndex());
     }
 }

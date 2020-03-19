@@ -8,11 +8,12 @@ import java.io.IOException;
 
 public class TicketsWorker extends Thread {
     String school, fio, qrcode, quote, path;
-    int leftborder, rightborder, progress;
+    int leftborder, rightborder, progress, xAdd, yAdd, iconSize, BGThreshold;
+
     Image icon;
 
 
-    TicketsWorker(String school, String fio, String qrcode, String path, String quote, Image icon,
+    TicketsWorker(String school, String fio, String qrcode, String path, String quote, Image icon, int xAdd, int yAdd,int iconSize, int BGThreshold,
            int leftborder, int rightborder) {
         this.school = school;
         this.fio = fio;
@@ -22,13 +23,17 @@ public class TicketsWorker extends Thread {
         this.rightborder = rightborder;
         this.icon = icon;
         this.quote = quote;
+        this.xAdd = xAdd;
+        this.yAdd = yAdd;
+        this.iconSize = iconSize;
+        this.BGThreshold = BGThreshold;
     }
 
 
     @Override
     public void run() {
         for (int i = leftborder; i <= rightborder; ++i) {
-            Ticket tmp = new Ticket(i, this.school, this.fio, this.qrcode, this.quote, this.icon);
+            Ticket tmp = new Ticket(i, this.school, this.fio, this.qrcode, this.quote, this.icon, this.xAdd, this.yAdd, this.iconSize, this.BGThreshold);
             this.writeTicketToFile(tmp);
             Main.control.addTicketToArray(tmp);
             this.progress = i - leftborder + 1;

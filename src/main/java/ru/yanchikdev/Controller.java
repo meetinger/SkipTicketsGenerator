@@ -3,7 +3,9 @@ package ru.yanchikdev;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -13,6 +15,7 @@ import ru.yanchikdev.lib.MathUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -33,14 +36,22 @@ public class Controller {
     ProgressBar progressBar;
 
     @FXML
+    javafx.scene.control.Slider XSlider, YSlider, iconSizeSlider, thresholdSlider;
+
+    @FXML
+    javafx.scene.control.CheckBox BGRemoveCB;
+
+    @FXML
     ImageView preImage;
     String school;
     String fio;
-    int amount;
+    int amount, xAdd, yAdd, iconSize ,BGThreshold;
     String qrcode;
     String quote;
     String path = "";
-    Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB), null);
+    Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_ARGB), null);
+
+    Boolean isBGRemove;
 
     Ticket preView;
 
@@ -56,6 +67,15 @@ public class Controller {
         amount = Integer.parseInt(amountField.getText());
         qrcode = qrcodeField.getText();
         quote = quoteField.getText();
+        xAdd = (int) XSlider.getValue();
+        yAdd = (int) YSlider.getValue();
+        iconSize = (int) iconSizeSlider.getValue();
+        isBGRemove = BGRemoveCB.isSelected();
+        if(isBGRemove){
+            BGThreshold = (int) thresholdSlider.getValue();
+        }else {
+            BGThreshold = -1;
+        }
     }
 
     @FXML
@@ -100,7 +120,7 @@ public class Controller {
         updatePreview();
 
         for (int i = 0; i < numthreads; ++i) {
-            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, ((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
+            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize,BGThreshold,((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
             ticketsWorkers.get(i).start();
         }
 
@@ -141,6 +161,10 @@ public class Controller {
                 int lastindex = Math.min((i + 1) * 12 * factor, amount - 1);
 
                 stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * 12 * factor, lastindex + 1)), path));
+                //tickets.forEach(t -> t=null);
+               /* for (int j = i*12*factor;j<=lastindex+1;++j ){
+                    tickets.set(j, null);
+                }*/
                 stackWorkers.get(stackWorkers.size() - 1).start();
             }
         }
@@ -183,7 +207,7 @@ public class Controller {
     public void updatePreview() {
         updateVars();
 
-        preView = new Ticket(0, school, fio, qrcode, quote, icon);
+        preView = new Ticket(0, school, fio, qrcode, quote, icon, xAdd, yAdd, iconSize ,BGThreshold);
         preImage.setSmooth(true);
         preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int) (preImage.getFitWidth() * 2), (int) (preImage.getFitHeight() * 2)), null));
     }

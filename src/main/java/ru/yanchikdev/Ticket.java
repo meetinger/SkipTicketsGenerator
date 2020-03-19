@@ -14,19 +14,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 
-public class Ticket implements Comparable<Ticket>{
+public class Ticket implements Comparable<Ticket> {
 
-    private String  school, fio, QRString, quote;
+    private String school, fio, QRString, quote;
     private BufferedImage QRCodeIMG, stamp, icon, resultImage;
     int index;
+    int iconX, iconY, iconSize, bgthreshold;
 
-    public Ticket(int index, String school, String fio, String QRCode, String quote ,Image icon) {
+    public Ticket(int index, String school, String fio, String QRCode, String quote, Image icon, int iconX, int iconY,int iconSize, int bgthreshold) {
         this.index = index;
         this.school = school;
         this.fio = fio;
         this.quote = quote;
         this.QRString = QRCode.replace("%number%", String.valueOf(this.index)).replace("%fio%", this.fio).replace("%school%", this.school);
         this.icon = SwingFXUtils.fromFXImage(icon, null);
+        this.iconX = iconX;
+        this.iconY = iconY;
+        this.iconSize = iconSize;
+        this.bgthreshold = bgthreshold;
 
         resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
         stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
@@ -98,6 +103,21 @@ public class Ticket implements Comparable<Ticket>{
         stamp = ImageUtils.rotateImageByDegrees(stampAwp, -35);
     }
 
+    private void removeBG() {
+        for (int y = 0; y < icon.getHeight(); ++y) {
+            for (int x = 0; x < icon.getWidth(); ++x) {
+                int argb = icon.getRGB(x, y);
+                int a = (argb >> 24) & 0xff;
+                int r = (argb >> 16) & 0xff;
+                int g = (argb >> 8) & 0xff;
+                int b = (argb) & 0xff;
+                if (r >= bgthreshold && g >= bgthreshold && b >= bgthreshold) {
+                    icon.setRGB(x, y, new Color(r, g, b, 0).getRGB());
+                }
+            }
+        }
+
+    }
 
     private void makeResultImage() {
         BufferedImage resultAwp = resultImage;
@@ -109,9 +129,13 @@ public class Ticket implements Comparable<Ticket>{
 
         gr.drawImage(QRCodeIMG, 1210, 620, null);
 
-        if (icon != null) {
-            gr.drawImage(ImageUtils.fitByWidth(icon, 200), 60, 675, null);
+        icon = ImageUtils.fitByWidth(icon, iconSize);
+
+        if (bgthreshold != -1) {
+            removeBG();
         }
+        gr.drawImage(icon, 60 + iconX, 675 + iconY, null);
+
 
         int fontSize = 30;
 
@@ -121,18 +145,18 @@ public class Ticket implements Comparable<Ticket>{
 
         ImageUtils.printCenterString(gr, school, 475, 80, 80);
 
-        String[] quoteArr = quote.replace("\\n","\n").split("\\r?\\n");
+        String[] quoteArr = quote.replace("\\n", "\n").split("\\r?\\n");
         gr.setColor(Color.black);
         gr.setFont(new Font("Verdana", Font.PLAIN, 30));
-        for(int i = 0; i < quoteArr.length; ++i){
-            ImageUtils.printCenterAdaptiveString(gr, quoteArr[i], 150, 275, 650+i*30);
+        for (int i = 0; i < quoteArr.length; ++i) {
+            ImageUtils.printCenterAdaptiveString(gr, quoteArr[i], 150, 275, 650 + i * 30);
         }
 
         resultImage = resultAwp;
     }
 
     @Override
-    public int compareTo(Ticket t){
+    public int compareTo(Ticket t) {
         return this.getIndex() - t.getIndex();
     }
 

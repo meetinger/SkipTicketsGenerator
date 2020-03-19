@@ -25,6 +25,7 @@ public class StackWorker extends Thread {
             writeStackToFile(tmp);
         }
         for (int i = 0; i <= stack.size() / 12; ++i) {
+            System.out.println("Размер стака: "+stack.size());
             int lastindex = Math.min((i + 1) * 12, stack.size());
             if (i * 12 + 1 != lastindex) {
                 TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(i * 12, lastindex)));

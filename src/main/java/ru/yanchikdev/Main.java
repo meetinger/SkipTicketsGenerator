@@ -16,7 +16,7 @@ public class Main extends Application {
         control = loader.getController();
         control.updatePreview();
         primaryStage.setTitle("SkipTicketsGenerator");
-        primaryStage.setScene(new Scene(root, 600, 410));
+        primaryStage.setScene(new Scene(root, 600, 500));
         primaryStage.getIcons().add(new Image(String.valueOf(getClass().getClassLoader().getResource("img/favicon.png"))));
         primaryStage.show();
     }

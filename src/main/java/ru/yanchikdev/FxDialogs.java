@@ -1,4 +1,4 @@
-package code;
+package ru.yanchikdev;
 
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -18,14 +18,20 @@ import java.util.Optional;
 
 public class FxDialogs {
 
-    public static void showInformation(String title, String message) {
+    public static void showInformation(String title, String message, int height) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initStyle(StageStyle.UTILITY);
         alert.setTitle("Information");
         alert.setHeaderText(title);
         alert.setContentText(message);
-
+        if(height != -1) {
+            alert.getDialogPane().setMinHeight(height);
+        }
         alert.showAndWait();
+    }
+
+    public static void showInformation(String title, String message){
+        showInformation(title, message, -1);
     }
 
     public static void showWarning(String title, String message) {
@@ -93,7 +99,6 @@ public class FxDialogs {
         alert.setHeaderText(title);
         alert.setContentText(message);
 
-        //To make enter key press the actual focused button, not the first one. Just like pressing "space".
         alert.getDialogPane().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 event.consume();

@@ -21,13 +21,13 @@ public class Ticket implements Comparable<Ticket> {
     int index;
     int iconX, iconY, iconSize, bgthreshold;
 
-    public Ticket(int index, String school, String fio, String QRCode, String quote, Image icon, int iconX, int iconY,int iconSize, int bgthreshold) {
+    public Ticket(int index, String school, String fio, String QRCode, String quote, BufferedImage icon, int iconX, int iconY,int iconSize, int bgthreshold) {
         this.index = index;
         this.school = school;
         this.fio = fio;
         this.quote = quote;
         this.QRString = QRCode.replace("%number%", String.valueOf(this.index)).replace("%fio%", this.fio).replace("%school%", this.school);
-        this.icon = SwingFXUtils.fromFXImage(icon, null);
+        this.icon = icon;
         this.iconX = iconX;
         this.iconY = iconY;
         this.iconSize = iconSize;
@@ -116,7 +116,20 @@ public class Ticket implements Comparable<Ticket> {
                 }
             }
         }
+    }
 
+    void updateIcon(BufferedImage icon, int iconX, int iconY,int iconSize, int bgthreshold){
+        this.icon = icon;
+        this.iconX = iconX;
+        this.iconY = iconY;
+        this.iconSize = iconSize;
+        this.bgthreshold = bgthreshold;
+
+        resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
+        stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
+        writeQRCode();
+        writeStamp();
+        makeResultImage();
     }
 
     private void makeResultImage() {

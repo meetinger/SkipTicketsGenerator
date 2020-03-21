@@ -1,5 +1,6 @@
 package ru.yanchikdev;
 
+
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -36,10 +37,10 @@ public class Controller {
     ProgressBar progressBar;
 
     @FXML
-    javafx.scene.control.Slider XSlider, YSlider, iconSizeSlider, thresholdSlider;
+    Slider XSlider, YSlider, iconSizeSlider, thresholdSlider;
 
     @FXML
-    javafx.scene.control.CheckBox BGRemoveCB;
+    CheckBox BGRemoveCB;
 
     @FXML
     ImageView preImage;
@@ -49,9 +50,10 @@ public class Controller {
     String qrcode;
     String quote;
     String path = "";
-    Image icon = SwingFXUtils.toFXImage(new BufferedImage(5, 5, BufferedImage.TYPE_INT_ARGB), null);
+    BufferedImage icon = new BufferedImage(5, 5, BufferedImage.TYPE_INT_ARGB);
 
     Boolean isBGRemove;
+
 
     Ticket preView;
 
@@ -60,6 +62,41 @@ public class Controller {
 
     int threadsCounter = 0;
     int numThreads = Runtime.getRuntime().availableProcessors();
+
+    Boolean isTrottlerFirst = true;
+
+    Timer trottler = new javax.swing.Timer(50, new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            if(!isTrottlerFirst){
+                updateIcon();
+                ((Timer) evt.getSource()).stop();
+                isTrottlerFirst = true;
+            }
+            isTrottlerFirst = false;
+        }
+    });
+
+
+    public void initialize() {
+        XSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateIconTrottled();
+        });
+        YSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateIconTrottled();
+        });
+        iconSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateIconTrottled();
+        });
+        thresholdSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            updateIconTrottled();
+        });
+    }
+
+    public void updateIconTrottled(){
+        if(!trottler.isRunning()){
+            trottler.start();
+        }
+    }
 
     public void updateVars() {
         school = schoolField.getText();
@@ -208,10 +245,20 @@ public class Controller {
         updateVars();
 
         preView = new Ticket(0, school, fio, qrcode, quote, icon, xAdd, yAdd, iconSize ,BGThreshold);
+            setPreview();
+    }
+
+    public void setPreview(){
         preImage.setSmooth(true);
         preImage.setImage(SwingFXUtils.toFXImage(ImageUtils.resizeImage(preView.getResultImage(), (int) (preImage.getFitWidth() * 2), (int) (preImage.getFitHeight() * 2)), null));
     }
 
+    @FXML
+    public void updateIcon(){
+        updateVars();
+        preView.updateIcon(icon, xAdd, yAdd, iconSize, BGThreshold);
+        setPreview();
+    }
 
     @FXML
     public void showHelp() {
@@ -231,7 +278,7 @@ public class Controller {
 
         if (photo != null) {
             FxDialogs.showInformation("Файл", photo.getPath());
-            icon = new Image(photo.toURI().toString());
+            icon = SwingFXUtils.fromFXImage(new Image(photo.toURI().toString()), null);
             updatePreview();
         } else {
             FxDialogs.showError("Ошибка", "Файл Неверный!");

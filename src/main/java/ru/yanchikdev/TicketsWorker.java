@@ -3,6 +3,7 @@ package ru.yanchikdev;
 import javafx.scene.image.Image;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -10,10 +11,10 @@ public class TicketsWorker extends Thread {
     String school, fio, qrcode, quote, path;
     int leftborder, rightborder, progress, xAdd, yAdd, iconSize, BGThreshold;
 
-    Image icon;
+    BufferedImage icon;
 
 
-    TicketsWorker(String school, String fio, String qrcode, String path, String quote, Image icon, int xAdd, int yAdd,int iconSize, int BGThreshold,
+    TicketsWorker(String school, String fio, String qrcode, String path, String quote, BufferedImage icon, int xAdd, int yAdd,int iconSize, int BGThreshold,
            int leftborder, int rightborder) {
         this.school = school;
         this.fio = fio;

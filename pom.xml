@@ -95,8 +95,7 @@
                                             <class classes="private" methods="private" fields="private">
                                                 <patternset>
                                                     <include name="ru.yanchikdev.Controller"/>
-                                                    <include name="com.github.*"/>
-                                                    <include name="com.github.*"/>
+                                                    <include name="com.github.**.*"/>
                                                 </patternset>
                                             </class>
                                         </keep>

@@ -116,7 +116,7 @@ public class Controller {
     }
 
     @FXML
-    public void genTickets() {
+    public void startGenTickets() {
         updateVars();
         if (path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
         else {
@@ -124,7 +124,7 @@ public class Controller {
 
             numThreads = Math.min(Runtime.getRuntime().availableProcessors(), amount);
 
-            startGen(numThreads);
+            genTickets(numThreads);
 
             FxDialogs.showInformation("ОK", "Талоны сохраняются\nв указанную директорию!");
         }
@@ -148,7 +148,7 @@ public class Controller {
         }
     }
 
-    public void startGen(int numthreads) {
+    public void genTickets(int numthreads) {
         threadsCounter = 0;
 
         new File(path + "/tickets/").mkdir();
@@ -184,6 +184,7 @@ public class Controller {
     }
 
     public void genStacks() {
+
         progressBar.setStyle("-fx-accent: orange;");
         Collections.sort(tickets);
 
@@ -196,12 +197,7 @@ public class Controller {
 
             for (int i = 0; i <= amount / (12 * factor); ++i) {
                 int lastindex = Math.min((i + 1) * 12 * factor, amount - 1);
-
                 stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * 12 * factor, lastindex + 1)), path));
-                //tickets.forEach(t -> t=null);
-               /* for (int j = i*12*factor;j<=lastindex+1;++j ){
-                    tickets.set(j, null);
-                }*/
                 stackWorkers.get(stackWorkers.size() - 1).start();
             }
         }
@@ -221,7 +217,6 @@ public class Controller {
             }
         });
         progressUpdater.start();
-
     }
 
     public double calcTicketsProgress() {
@@ -263,6 +258,10 @@ public class Controller {
     @FXML
     public void showHelp() {
         FxDialogs.showInformation("Помощь", "%number% - для кодирования номера талона,\n%school% - для кодирования школы,\n%fio% - для кодирования ФИО.\n\nДанные операторы можно комбинировать:\n%school%: %number%\n%school%, %fio%\n\nТакже Вы можете ввести любой текст.", 300);
+    }
+
+    public void setProgress(double progress){
+        progressBar.setProgress(progress);
     }
 
     @FXML

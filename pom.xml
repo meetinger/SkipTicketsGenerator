@@ -6,7 +6,7 @@
 
     <groupId>ru.yanchikdev</groupId>
     <artifactId>SkipTicketsGenerator</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -95,8 +95,7 @@
                                             <class classes="private" methods="private" fields="private">
                                                 <patternset>
                                                     <include name="ru.yanchikdev.Controller"/>
-                                                    <include name="com.github.*"/>
-                                                    <include name="com.github.*"/>
+                                                    <include name="com.github.**.*"/>
                                                 </patternset>
                                             </class>
                                         </keep>
@@ -117,13 +116,14 @@
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>javase</artifactId>
-            <version>3.4.0</version>
+            <version>3.4.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.kenglxn.qrgen</groupId>
             <artifactId>javase</artifactId>
             <version>2.6.0</version>
         </dependency>
+
     </dependencies>
     <repositories>
         <repository>

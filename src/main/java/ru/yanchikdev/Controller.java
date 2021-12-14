@@ -149,6 +149,7 @@ public class Controller {
     }
 
     public void genTickets(int numthreads) {
+        ticketsWorkers.clear();
         threadsCounter = 0;
 
         new File(path + "/tickets/").mkdir();
@@ -160,6 +161,8 @@ public class Controller {
             ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize,BGThreshold,((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
             ticketsWorkers.get(i).start();
         }
+
+        progressBar.setStyle("");
 
         progressBar.setVisible(true);
 
@@ -184,7 +187,7 @@ public class Controller {
     }
 
     public void genStacks() {
-
+        stackWorkers.clear();
         progressBar.setStyle("-fx-accent: orange;");
         Collections.sort(tickets);
 

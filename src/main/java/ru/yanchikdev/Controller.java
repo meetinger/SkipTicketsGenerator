@@ -12,16 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import ru.yanchikdev.lib.ImageUtils;
-import ru.yanchikdev.lib.MathUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -63,39 +59,26 @@ public class Controller {
     int threadsCounter = 0;
     int numThreads = Runtime.getRuntime().availableProcessors();
 
-    Boolean isTrottlerFirst = true;
-
-    Timer trottler = new javax.swing.Timer(50, new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            if(!isTrottlerFirst){
-                updateIcon();
-                ((Timer) evt.getSource()).stop();
-                isTrottlerFirst = true;
-            }
-            isTrottlerFirst = false;
-        }
-    });
+    ThrottleFunction updateIconThrottled = new ThrottleFunction((arg)->{updateIcon();}, 50);
 
 
     public void initialize() {
         XSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateIconTrottled();
+            updateIconThrottled();
         });
         YSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateIconTrottled();
+            updateIconThrottled();
         });
         iconSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateIconTrottled();
+            updateIconThrottled();
         });
         thresholdSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            updateIconTrottled();
+            updateIconThrottled();
         });
     }
 
-    public void updateIconTrottled(){
-        if(!trottler.isRunning()){
-            trottler.start();
-        }
+    public void updateIconThrottled(){
+        updateIconThrottled.run();
     }
 
     public void updateVars() {
@@ -148,7 +131,7 @@ public class Controller {
         }
     }
 
-    public void genTickets(int numthreads) {
+    public void genTickets(int numThreads) {
         ticketsWorkers.clear();
         threadsCounter = 0;
 
@@ -157,8 +140,8 @@ public class Controller {
 
         updatePreview();
 
-        for (int i = 0; i < numthreads; ++i) {
-            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize,BGThreshold,((i) * amount) / (numthreads) + 1, (i + 1) * amount / numthreads));
+        for (int i = 0; i < numThreads; ++i) {
+            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize,BGThreshold,((i) * amount) / (numThreads) + 1, (i + 1) * amount / numThreads));
             ticketsWorkers.get(i).start();
         }
 
@@ -199,8 +182,8 @@ public class Controller {
             int factor = amount/(numThreads*12) + 1;
 
             for (int i = 0; i <= amount / (12 * factor); ++i) {
-                int lastindex = Math.min((i + 1) * 12 * factor, amount - 1);
-                stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * 12 * factor, lastindex + 1)), path));
+                int lastIndex = Math.min((i + 1) * 12 * factor, amount - 1);
+                stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * 12 * factor, lastIndex + 1)), path));
                 stackWorkers.get(stackWorkers.size() - 1).start();
             }
         }
@@ -290,11 +273,11 @@ public class Controller {
     @FXML
     public void getDir() {
         DirectoryChooser dc = new DirectoryChooser();
-        File dirfile = dc.showDialog(null);
+        File dirFile = dc.showDialog(null);
 
-        if (dirfile != null) {
-            FxDialogs.showInformation("Директория", dirfile.getPath());
-            path = dirfile.getPath();
+        if (dirFile != null) {
+            FxDialogs.showInformation("Директория", dirFile.getPath());
+            path = dirFile.getPath();
         } else {
             FxDialogs.showError("Ошибка", "Директория Неверный!");
         }

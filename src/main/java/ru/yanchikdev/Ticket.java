@@ -4,7 +4,6 @@ package ru.yanchikdev;
 import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
 import ru.yanchikdev.lib.ImageUtils;
-import ru.yanchikdev.lib.MathUtils;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
@@ -19,9 +18,9 @@ public class Ticket implements Comparable<Ticket> {
     private String school, fio, QRString, quote;
     private BufferedImage QRCodeIMG, stamp, icon, resultImage;
     int index;
-    int iconX, iconY, iconSize, bgthreshold;
+    int iconX, iconY, iconSize, BGThreshold;
 
-    public Ticket(int index, String school, String fio, String QRCode, String quote, BufferedImage icon, int iconX, int iconY,int iconSize, int bgthreshold) {
+    public Ticket(int index, String school, String fio, String QRCode, String quote, BufferedImage icon, int iconX, int iconY,int iconSize, int BGThreshold) {
         this.index = index;
         this.school = school;
         this.fio = fio;
@@ -31,7 +30,7 @@ public class Ticket implements Comparable<Ticket> {
         this.iconX = iconX;
         this.iconY = iconY;
         this.iconSize = iconSize;
-        this.bgthreshold = bgthreshold;
+        this.BGThreshold = BGThreshold;
 
         resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
         stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
@@ -54,9 +53,9 @@ public class Ticket implements Comparable<Ticket> {
 
     private void writeQRCode() {
 
-        File qrfile = QRCode.from(QRString).to(ImageType.PNG).withSize(350, 350).withCharset("UTF-8").file();
+        File qrFile = QRCode.from(QRString).to(ImageType.PNG).withSize(350, 350).withCharset("UTF-8").file();
         try {
-            QRCodeIMG = ImageIO.read(qrfile);
+            QRCodeIMG = ImageIO.read(qrFile);
         } catch (Exception e) {
 
         }
@@ -111,19 +110,19 @@ public class Ticket implements Comparable<Ticket> {
                 int r = (argb >> 16) & 0xff;
                 int g = (argb >> 8) & 0xff;
                 int b = (argb) & 0xff;
-                if (r >= bgthreshold && g >= bgthreshold && b >= bgthreshold) {
+                if (r >= BGThreshold && g >= BGThreshold && b >= BGThreshold) {
                     icon.setRGB(x, y, new Color(r, g, b, 0).getRGB());
                 }
             }
         }
     }
 
-    void updateIcon(BufferedImage icon, int iconX, int iconY,int iconSize, int bgthreshold){
+    void updateIcon(BufferedImage icon, int iconX, int iconY,int iconSize, int BGThreshold){
         this.icon = icon;
         this.iconX = iconX;
         this.iconY = iconY;
         this.iconSize = iconSize;
-        this.bgthreshold = bgthreshold;
+        this.BGThreshold = BGThreshold;
 
         resultImage = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/template.png"))), null);
         stamp = SwingFXUtils.fromFXImage(new Image(String.valueOf(getClass().getClassLoader().getResource("img/stamp_r.png"))), null);
@@ -144,7 +143,7 @@ public class Ticket implements Comparable<Ticket> {
 
         icon = ImageUtils.fitByWidth(icon, iconSize);
 
-        if (bgthreshold != -1) {
+        if (BGThreshold != -1) {
             removeBG();
         }
         gr.drawImage(icon, 60 + iconX, 675 + iconY, null);

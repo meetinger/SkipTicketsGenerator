@@ -161,7 +161,7 @@ public class Controller {
     public void stackWorkerEnd(){
         ++stackWorkersCounter;
         if(generationBoundIndex >= generationBounds.size()){
-//            FxDialogs.showInformation("OK", "Талоны сохранены в указанную директорию!");
+            Platform.runLater(()->{FxDialogs.showInformation("OK", "Талоны сохранены в указанную директорию!");});
             return;
         }
         if (stackWorkersCounter >= stackWorkersAmount){
@@ -236,6 +236,9 @@ public class Controller {
 
             for(int i = 1; i < amount/ticketsPerWorker + 1; ++i) {
                 int lastIndex = Math.min(i * ticketsPerWorker, amount);
+                if (tickets.subList((i - 1) * ticketsPerWorker, lastIndex).isEmpty()){
+                    break;
+                }
                 stackWorkers.add(new StackWorker(tickets.subList((i - 1) * ticketsPerWorker, lastIndex), path));
                 stackWorkers.get(stackWorkers.size() - 1).start();
                 ++stackWorkersAmount;

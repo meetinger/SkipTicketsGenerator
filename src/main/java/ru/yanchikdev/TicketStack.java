@@ -23,6 +23,8 @@ public class TicketStack {
 
     public void writeTickets() {
         Graphics2D gr = toPrint.createGraphics();
+        gr.setColor(Color.white);
+        gr.fillRect(0, 0, toPrint.getWidth(), toPrint.getHeight());
         int height = imgH / divider;
         int width = imgW / (divider -1);
         for (int i = 0; i < tickets.size(); ++i) {

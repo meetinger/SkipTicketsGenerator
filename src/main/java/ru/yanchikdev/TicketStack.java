@@ -4,16 +4,16 @@ import ru.yanchikdev.lib.ImageUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.List;
 
 public class TicketStack {
-    ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+    List<Ticket> tickets;
     BufferedImage toPrint;
     int divider = 4;
     int imgH;
     int imgW;
 
-    public TicketStack(ArrayList<Ticket> tickets) {
+    public TicketStack(List<Ticket> tickets) {
         imgH = tickets.get(0).getResultImage().getHeight() * divider;
         imgW = tickets.get(0).getResultImage().getWidth() * (divider -1);
         toPrint = new BufferedImage(imgW, imgH, BufferedImage.TYPE_INT_RGB);
@@ -36,5 +36,9 @@ public class TicketStack {
 
     public String getIndexes() {
         return Math.min(tickets.get(0).getIndex(), tickets.get(tickets.size() - 1).getIndex()) + "-" + Math.max(tickets.get(0).getIndex(), tickets.get(tickets.size() - 1).getIndex());
+    }
+
+    public String toString(){
+        return String.valueOf(tickets);
     }
 }

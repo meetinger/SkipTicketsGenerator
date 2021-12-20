@@ -5,8 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.yanchikdev.Controller">
-   <Button fx:id="skipbtn" layoutX="15.0" layoutY="447.0" mnemonicParsing="false" onAction="#startGenTickets" prefHeight="34.0" prefWidth="571.0" text="Skip">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.yanchikdev.Controller">
+   <Button fx:id="skipbtn" layoutX="15.0" layoutY="447.0" mnemonicParsing="false" onAction="#startGeneration" prefHeight="34.0" prefWidth="571.0" text="Skip">
       <font>
          <Font name="Ubuntu Bold" size="21.0" />
       </font>
@@ -71,4 +71,6 @@
    <Slider fx:id="thresholdSlider" layoutX="15.0" layoutY="358.0" max="255.0" min="1.0" prefHeight="15.0" prefWidth="259.0" value="200.0" />
    <Slider fx:id="iconSizeSlider" layoutX="82.0" layoutY="263.0" max="300.0" min="100.0" prefHeight="15.0" prefWidth="197.0" value="200.0" />
    <Label layoutX="14.0" layoutY="263.0" prefHeight="16.0" prefWidth="79.0" text="IconSize" />
+   <Label layoutX="266.0" layoutY="419.0" prefHeight="17.0" prefWidth="57.0" text="Progress:" />
+   <Label id="progressLbl" fx:id="progressLbl" layoutX="323.0" layoutY="419.0" prefHeight="17.0" prefWidth="25.0" text="0" />
 </Pane>

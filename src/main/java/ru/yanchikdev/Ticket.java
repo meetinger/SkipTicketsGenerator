@@ -172,4 +172,7 @@ public class Ticket implements Comparable<Ticket> {
         return this.getIndex() - t.getIndex();
     }
 
+    public String toString(){
+        return "Ticket: "+this.index;
+    }
 }

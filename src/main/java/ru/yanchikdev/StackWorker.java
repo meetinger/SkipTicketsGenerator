@@ -4,15 +4,15 @@ import javax.imageio.ImageIO;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class StackWorker extends Thread {
 
-    ArrayList<Ticket> stack = new ArrayList<>();
+    List<Ticket> stack;
     String path;
-    double progress;
+    int progress;
 
-    public StackWorker(ArrayList<Ticket> stack, String path) {
+    public StackWorker(List<Ticket> stack, String path) {
         this.stack = stack;
         this.path = path;
     }
@@ -24,15 +24,17 @@ public class StackWorker extends Thread {
             TicketStack tmp = new TicketStack(stack);
             writeStackToFile(tmp);
         }
-        for (int i = 0; i <= stack.size() / 12; ++i) {
-            //System.out.println("Размер стака: "+stack.size());
-            int lastIndex = Math.min((i + 1) * 12, stack.size());
-            if (i * 12 + 1 != lastIndex) {
-                TicketStack tmp = new TicketStack(new ArrayList<Ticket>(stack.subList(i * 12, lastIndex)));
-                writeStackToFile(tmp);
+        for (int i = 1; i < stack.size() / 12 + 2; ++i) {
+            int lastIndex = Math.min(i * 12, stack.size());
+            if(stack.subList((i - 1) * 12, lastIndex).isEmpty()){
+                break;
             }
-            progress = (double) (i + 1) / (stack.size() / 12);
+            TicketStack tmp = new TicketStack(stack.subList((i - 1) * 12, lastIndex));
+            writeStackToFile(tmp);
+
+            progress+=12;
         }
+        Main.control.stackWorkerEnd();
     }
 
 
@@ -44,8 +46,11 @@ public class StackWorker extends Thread {
         }
     }
 
+    public int getTicketsAmount(){
+        return stack.size();
+    }
 
-    public double getProgress() {
+    public int getProgress() {
         return progress;
     }
 }

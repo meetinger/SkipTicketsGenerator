@@ -1,17 +1,16 @@
 package ru.yanchikdev;
 
 
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import ru.yanchikdev.lib.ImageUtils;
+import ru.yanchikdev.lib.MathUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -39,6 +38,9 @@ public class Controller {
     CheckBox BGRemoveCB;
 
     @FXML
+    Label progressLbl;
+
+    @FXML
     ImageView preImage;
     String school;
     String fio;
@@ -55,12 +57,21 @@ public class Controller {
 
     ArrayList<TicketsWorker> ticketsWorkers = new ArrayList<TicketsWorker>();
     ArrayList<StackWorker> stackWorkers = new ArrayList<StackWorker>();
+    ArrayList<GenerationBound> generationBounds = new ArrayList<GenerationBound>();
 
-    int threadsCounter = 0;
+    int ticketsWorkerCounter = 0;
+    int stackWorkersCounter = 0;
     int numThreads = Runtime.getRuntime().availableProcessors();
+    int stackWorkersAmount = numThreads;
+    int generationBoundIndex = 0;
+    final int ticketsStepAmount = 120;
 
     ThrottleFunction updateIconThrottled = new ThrottleFunction((arg)->{updateIcon();}, 50);
 
+    Timer progressUpdater = new Timer(100, evt -> {});
+    double ticketsProgress = 0;
+    double stackProgress = 0;
+    double progress = 0;
 
     public void initialize() {
         XSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -99,19 +110,34 @@ public class Controller {
     }
 
     @FXML
-    public void startGenTickets() {
+    public void startGeneration() {
         updateVars();
-        if (path.equals("")) FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
-        else {
-            tickets.clear();
-
-            numThreads = Math.min(Runtime.getRuntime().availableProcessors(), amount);
-
-            genTickets(numThreads);
-
-            FxDialogs.showInformation("ОK", "Талоны сохраняются\nв указанную директорию!");
+        if (path.equals("")) {
+            FxDialogs.showError("Ошибка", "Выберите директорию сохранения!");
+            return;
         }
+        tickets.clear();
+        generationBoundIndex = 0;
+        generationBounds.clear();
+
+        numThreads = Math.min(Runtime.getRuntime().availableProcessors(), amount);
+//        genTickets(numThreads);
+        FxDialogs.showInformation("ОK", "Талоны сохраняются\nв указанную директорию!");
+
+
+        for(int i = 1; i < amount/ticketsStepAmount+2; ++i){
+            int leftBound = (i-1)*ticketsStepAmount;
+            int rightBound = Math.min(i*ticketsStepAmount, amount);
+            GenerationBound bound = new GenerationBound(leftBound, rightBound);
+            generationBounds.add(bound);
+        }
+        GenerationBound bound = generationBounds.get(0);
+        genTickets(numThreads, bound.getLeftBound(), bound.getRightBound());
+//        System.out.println(generationBounds);
     }
+
+
+
 
     public void addTicketsToArray(ArrayList<Ticket> subArray) {
         this.tickets.addAll(subArray);
@@ -121,19 +147,37 @@ public class Controller {
         this.tickets.add(ticket);
     }
 
-    public void threadsEnd() {
-        ++threadsCounter;
+    public void ticketsWorkerEnd() {
+        ++ticketsWorkerCounter;
+        if (ticketsWorkerCounter >= numThreads) {
+            GenerationBound bound = generationBounds.get(Math.min(generationBoundIndex, generationBounds.size()-1));
+            ticketsProgress += calcTicketsProgress();
+            genStacks(numThreads, bound.getLeftBound(), bound.getRightBound());
+            ticketsWorkerCounter = 0;
+        }
+
     }
 
-    public void startStacksGen() {
-        if (threadsCounter >= numThreads) {
-            genStacks();
+    public void stackWorkerEnd(){
+        ++stackWorkersCounter;
+        if(generationBoundIndex >= generationBounds.size()){
+//            FxDialogs.showInformation("OK", "Талоны сохранены в указанную директорию!");
+            return;
+        }
+        if (stackWorkersCounter >= stackWorkersAmount){
+            GenerationBound bound = generationBounds.get(generationBoundIndex);
+            genTickets(numThreads, bound.getLeftBound(), bound.getRightBound());
+            stackWorkersCounter = 0;
+            Platform.runLater(()->{progressLbl.setText(generationBoundIndex + "/" +generationBounds.size());});
+            ++generationBoundIndex;
         }
     }
 
-    public void genTickets(int numThreads) {
+    public void genTickets(int numThreads, int leftBound, int rightBound) {
+        progressUpdater.stop();
+        tickets.clear();
         ticketsWorkers.clear();
-        threadsCounter = 0;
+        ticketsWorkerCounter = 0;
 
         new File(path + "/tickets/").mkdir();
         new File(path + "/toPrint/").mkdir();
@@ -141,7 +185,8 @@ public class Controller {
         updatePreview();
 
         for (int i = 0; i < numThreads; ++i) {
-            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize,BGThreshold,((i) * amount) / (numThreads) + 1, (i + 1) * amount / numThreads));
+            ticketsWorkers.add(new TicketsWorker(school, fio, qrcode, path, quote, icon, xAdd, yAdd, iconSize, BGThreshold,
+                    ((i) * (rightBound - leftBound)) / (numThreads) + leftBound + 1, (i + 1) * (rightBound - leftBound) / numThreads + leftBound));
             ticketsWorkers.get(i).start();
         }
 
@@ -150,47 +195,56 @@ public class Controller {
         progressBar.setVisible(true);
 
 
-        Timer progressUpdater = new javax.swing.Timer(100, new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                double currentProgress = calcTicketsProgress();
-                progressBar.setProgress(currentProgress);
-                if (currentProgress >= 1) {
-                    ((Timer) evt.getSource()).stop();
-                    ticketsWorkers.clear();
-                    System.gc();
-                    System.out.println();
-                }
-
+        this.progressUpdater = new javax.swing.Timer(100, evt -> {
+            double currentProgress = calcTicketsProgress();
+            progressBar.setProgress(currentProgress);
+            if (currentProgress >= 1) {
+                ((Timer) evt.getSource()).stop();
+                ticketsWorkers.clear();
             }
         });
 
         progressUpdater.start();
 
+//        for(TicketsWorker i : ticketsWorkers){
+//            try {
+//                i.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
     }
 
-    public void genStacks() {
+    public void genStacks(int numThreads, int leftBound, int rightBound) {
+        progressUpdater.stop();
         stackWorkers.clear();
         progressBar.setStyle("-fx-accent: orange;");
         Collections.sort(tickets);
 
+        int amount = rightBound-leftBound;
 
-        if (amount <= 12) {
+
+        int ticketsPerWorker = MathUtils.lcm(numThreads, 12);
+
+        if (amount <= ticketsPerWorker) {
             stackWorkers.add(new StackWorker(tickets, path));
             stackWorkers.get(0).start();
+            stackWorkersAmount = 1;
         } else {
-            int factor = amount/(numThreads*12) + 1;
+            stackWorkersAmount = 0;
 
-            for (int i = 0; i <= amount / (12 * factor); ++i) {
-                int lastIndex = Math.min((i + 1) * 12 * factor, amount - 1);
-                stackWorkers.add(new StackWorker(new ArrayList<Ticket>(tickets.subList(i * 12 * factor, lastIndex + 1)), path));
+            for(int i = 1; i < amount/ticketsPerWorker + 1; ++i) {
+                int lastIndex = Math.min(i * ticketsPerWorker, amount);
+                stackWorkers.add(new StackWorker(tickets.subList((i - 1) * ticketsPerWorker, lastIndex), path));
                 stackWorkers.get(stackWorkers.size() - 1).start();
+                ++stackWorkersAmount;
             }
         }
 
         progressBar.setProgress(0);
 
-        Timer progressUpdater = new javax.swing.Timer(100, new ActionListener() {
+        this.progressUpdater = new javax.swing.Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 double currentProgress = calcStacksProgress();
                 progressBar.setProgress(currentProgress);
@@ -206,27 +260,31 @@ public class Controller {
     }
 
     public double calcTicketsProgress() {
-        int sum = 0;
+        double sumProgress = 0;
+        double sumTickets = 0;
         for (TicketsWorker thread : ticketsWorkers) {
-            sum += thread.getProgress();
+            sumProgress += thread.getProgress();
+            sumTickets += thread.getTicketsAmount();
         }
-        return (double) (sum) / (amount);
+        return sumProgress / sumTickets;
     }
 
     public double calcStacksProgress() {
-        double sum = 0;
-        for (StackWorker stack : stackWorkers) {
-            sum += stack.getProgress();
+        double sumProgress = 0;
+        double sumTickets = 0;
+        for (StackWorker thread : stackWorkers) {
+            sumProgress += thread.getProgress();
+            sumTickets += thread.getTicketsAmount();
         }
-        return sum / (stackWorkers.size()-1);
+        return sumProgress / sumTickets;
     }
 
     @FXML
     public void updatePreview() {
         updateVars();
 
-        preView = new Ticket(0, school, fio, qrcode, quote, icon, xAdd, yAdd, iconSize ,BGThreshold);
-            setPreview();
+        preView = new Ticket(0, school, fio, qrcode, quote, icon, xAdd, yAdd, iconSize, BGThreshold);
+        setPreview();
     }
 
     public void setPreview(){
